@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Packd - Activity Voting</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "bg-warm": "#FDFBFA",
+                    "surface-container-highest": "#f7dcdd",
+                    "on-tertiary": "#ffffff",
+                    "on-background": "#1A1A1A",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed-dim": "#59df8a",
+                    "on-secondary-fixed": "#1c1b1b",
+                    "surface-container-high": "#fde2e3",
+                    "tertiary": "#006d38",
+                    "on-surface": "#1A1A1A",
+                    "surface-variant": "#f7dcdd",
+                    "background": "#FFE7EC",
+                    "inverse-primary": "#ffb2b8",
+                    "surface-bright": "#FFE7EC",
+                    "on-tertiary-container": "#003317",
+                    "error": "#FF3B30",
+                    "surface-dim": "#efd4d5",
+                    "on-secondary-fixed-variant": "#474746",
+                    "tertiary-container": "#00a85a",
+                    "accent-dark": "#E13D59",
+                    "on-primary-fixed-variant": "#91002c",
+                    "on-error-container": "#93000a",
+                    "secondary": "#5f5e5e",
+                    "outline-variant": "#e2bec0",
+                    "outline": "#8e7071",
+                    "border-subtle": "#EFECEA",
+                    "primary-fixed": "#ffdadb",
+                    "on-secondary-container": "#636262",
+                    "tertiary-fixed": "#77fca4",
+                    "primary": "#E13D59",
+                    "on-primary-container": "#5d0019",
+                    "surface-container": "#ffe9e9",
+                    "secondary-fixed": "#e5e2e1",
+                    "accent-tint": "#FFE7EC",
+                    "primary-fixed-dim": "#ffb2b8",
+                    "success": "#2BB673",
+                    "inverse-on-surface": "#ffeced",
+                    "on-tertiary-fixed": "#00210d",
+                    "secondary-fixed-dim": "#c8c6c5",
+                    "surface-tint": "#E13D59",
+                    "on-primary": "#ffffff",
+                    "surface": "#FFE7EC",
+                    "surface-container-low": "#fff0f0",
+                    "ink-secondary": "#6B6B6B",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-surface": "#3d2c2d",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed": "#40000f",
+                    "primary-container": "#ff5470",
+                    "on-secondary": "#ffffff",
+                    "secondary-container": "#e2dfde",
+                    "on-surface-variant": "#5a4042",
+                    "on-tertiary-fixed-variant": "#005229"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px",
+                    "card": "20px"
+            },
+            "spacing": {
+                    "md": "16px",
+                    "xl": "32px",
+                    "lg": "24px",
+                    "edge-mobile": "20px",
+                    "xxl": "48px",
+                    "base": "8px",
+                    "xs": "4px",
+                    "sm": "8px"
+            },
+            "fontFamily": {
+                    "h2": ["Inter"],
+                    "h1": ["Inter"],
+                    "body": ["Inter"],
+                    "display": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "body-medium": ["Inter"],
+                    "caption": ["Inter"]
+            },
+            "fontSize": {
+                    "h2": ["18px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "h1": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "body": ["16px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                    "display": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "label-caps": ["11px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-medium": ["16px", {"lineHeight": "1.4", "fontWeight": "500"}],
+                    "caption": ["13px", {"lineHeight": "1.4", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .card-shadow {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+        }
+        .swipe-card {
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+        }
+        .vote-button-active {
+            transform: scale(0.95);
+        }
+        body {
+            overscroll-behavior: none;
+        }
+    </style>
+</head>
+<body class="bg-bg-warm font-body text-on-surface antialiased">
+<!-- TopAppBar -->
+<header class="w-full sticky top-0 z-40 bg-bg-warm flex justify-between items-center px-edge-mobile py-md">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="menu">menu</span>
+</div>
+<h1 class="font-display text-display text-primary tracking-tight">Packd</h1>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-fixed">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a young traveler, high-key studio lighting, warm skin tones, smiling gently. The aesthetic is clean and modern, mirroring a high-end social travel application. The background is a soft, blurred off-white, consistent with the Packd brand colors of warm neutrals and coral accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDuA3LsKrU3LikRIIKrfiEzNeUzqamWJc7-trHkUwaABl9ERcc3itTo5h9HN-A1to2ZKE_PNdt24LHm6MLDxFxUxrC0-QHwzy3rf-aT3oVtDujk6HYUqOrUA2b534oQS_yS23TMslABgYB-Erj0chYU9WqpnkwIxxYw1ZM48sctSptfKLbEy37xJQgMKBZcou3t9cj6-izDyTbHl_Cqycdz2EWNo1AMV8RyiPH1BLB28PRlIydNWo7"/>
+</div>
+</header>
+<main class="max-w-md mx-auto px-edge-mobile pt-lg pb-xxl min-h-[calc(100vh-160px)] flex flex-col justify-center">
+<!-- Activity Deck Container -->
+<div class="relative w-full aspect-[3/4] sm:aspect-[4/5] perspective-1000" id="activity-deck">
+<!-- Voting Card -->
+<div class="swipe-card relative w-full h-full bg-surface-container-lowest rounded-card card-shadow overflow-hidden flex flex-col" id="active-card">
+<!-- Large Activity Image -->
+<div class="relative h-[65%] w-full overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" data-alt="A breathtaking golden hour view of a classic wooden Riva boat cruising through the turquoise waters of the Amalfi Coast. The sun is setting behind rugged limestone cliffs, casting a warm coral and orange glow across the scene. The water sparkles with light-mode clarity, embodying a premium, luxury travel experience." id="card-image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbsWxt7eVIFSr_BaIBOMzhw8VcqFEDw41I97ILRLXsh-_Ktq6SKvxjyahdplth0ObUl3vcfOUap_9vILX3t0LFNF-BNr6-qINZ1KdxtJUsG-RorPNmKrLbRxET2jnJ88qYQk2j9cjzi2v9aeob-3J7gKMm3iIYCK4ENZXRNf2lN37_Ud6VfkXk9tmiX91YYLMUDpZ5LW_f31gJG3ks-MnF_Z8wBshs_PaXTLer5Y3PwSvRs4Md7pYX"/>
+<!-- Top Gradient Overlay -->
+<div class="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/30 to-transparent"></div>
+<!-- Contributor Tag -->
+<div class="absolute top-4 left-4 flex items-center gap-2 bg-white/20 backdrop-blur-md rounded-full px-3 py-1 text-white border border-white/20">
+<div class="w-5 h-5 rounded-full overflow-hidden border border-white">
+<img class="w-full h-full object-cover" data-alt="Close up portrait of a travel curator, natural lighting, soft focus background of an Italian village. Vibrant colors and high-end photographic quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCt5IqGkAj330lpKnvHiYyMrts47Rb5Qfa8-hxKDduD-MR8JS2JkRwZAbrD9NIgh7QAifMJq2GdSiNlq5UVCYwIzkUsUS5uyiDs2vT0KuL2JgrpHJM42V3sKg0_dv_ejRnoTiYogsr4qvP9n7lTa7jBF4JRRhzI-rTWtpuaydHK3dozre1CP_xlOttVn5Si0Zwr2vN8v3x54F2xGsEOuzAkD3oW9lrJHQZyjItc13ASAaz5sb5Nf99u"/>
+</div>
+<span class="font-caption text-caption">Added by Sarah J.</span>
+</div>
+<!-- Live Tally Overlay -->
+<div class="absolute bottom-4 left-4 bg-primary/90 text-white font-label-caps text-label-caps px-3 py-1.5 rounded-full backdrop-blur-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">group</span>
+                        3 people said yes
+                    </div>
+</div>
+<!-- Card Content -->
+<div class="flex-1 p-md flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-1">
+<h2 class="font-h1 text-h1 text-on-surface" id="card-title">Private Boat Tour</h2>
+<span class="text-primary font-body-medium" id="card-price">$$</span>
+</div>
+<p class="text-on-surface-variant font-body text-sm line-clamp-2" id="card-desc">
+                            Experience the Amalfi Coast from the water with a private skipper. Includes prosecco and swimming stops.
+                        </p>
+<div class="flex items-center gap-4 mt-3 text-on-surface-variant">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]" data-icon="schedule">schedule</span>
+<span class="font-caption text-caption" id="card-duration">4 hours</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]" data-icon="location_on">location_on</span>
+<span class="font-caption text-caption">Positano</span>
+</div>
+</div>
+</div>
+<!-- Voting Controls -->
+<div class="flex gap-4 pt-4 border-t border-border-subtle mt-2">
+<!-- No Button -->
+<button class="flex-1 h-14 bg-surface-variant/50 flex items-center justify-center rounded-xl active:scale-95 transition-transform hover:bg-surface-variant group" onclick="handleVote('no')">
+<span class="material-symbols-outlined text-on-surface-variant text-[28px] group-hover:scale-110 transition-transform" data-icon="close">close</span>
+</button>
+<!-- Yes Button -->
+<button class="flex-[2] h-14 bg-primary-container flex items-center justify-center gap-2 rounded-xl text-white shadow-lg active:scale-95 transition-transform hover:bg-primary group" onclick="handleVote('yes')">
+<span class="material-symbols-outlined text-[28px] group-hover:scale-110 transition-transform" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="font-h2 text-h2">Yes</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination/Progress Dots -->
+<div class="flex justify-center gap-2 mt-xl">
+<div class="w-8 h-1.5 rounded-full bg-primary"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-surface-container-high"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-surface-container-high"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-surface-container-high"></div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 bg-surface flex justify-around items-center px-4 pb-8 pt-3 border-t border-border-subtle shadow-[0_-4px_16px_rgba(0,0,0,0.06)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary/80 active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="luggage">luggage</span>
+<span class="font-label-caps text-label-caps mt-1">Trips</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary font-bold active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="explore" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="font-label-caps text-label-caps mt-1">Activities</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary/80 active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="fact_check">fact_check</span>
+<span class="font-label-caps text-label-caps mt-1">Checklist</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary/80 active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-caps text-label-caps mt-1">Profile</span>
+</a>
+</nav>
+<script>
+        const activities = [
+            {
+                title: "Private Boat Tour",
+                image: "https://images.unsplash.com/photo-1534008843784-66c39f1349cd?auto=format&fit=crop&q=80&w=1000",
+                desc: "Experience the Amalfi Coast from the water with a private skipper. Includes prosecco and swimming stops.",
+                price: "$$",
+                duration: "4 hours",
+                contributor: "Sarah J.",
+                votes: 3
+            },
+            {
+                title: "Sunset Wine Tasting",
+                image: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&q=80&w=1000",
+                desc: "Guided tour through terraced vineyards overlooking the sea. Sample local varieties and artisanal cheeses.",
+                price: "$$$",
+                duration: "2 hours",
+                contributor: "Mike R.",
+                votes: 5
+            },
+            {
+                title: "Cooking Class",
+                image: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&q=80&w=1000",
+                desc: "Learn to make authentic pasta from scratch in a local family kitchen in the hills of Ravello.",
+                price: "$$",
+                duration: "3 hours",
+                contributor: "Emma L.",
+                votes: 2
+            }
+        ];
+
+        let currentIndex = 0;
+
+        function handleVote(type) {
+            const card = document.getElementById('active-card');
+            
+            // Animation direction
+            const rotate = type === 'yes' ? 15 : -15;
+            const translate = type === 'yes' ? 500 : -500;
+            
+            card.style.transform = `translateX(${translate}px) rotate(${rotate}deg)`;
+            card.style.opacity = '0';
+
+            setTimeout(() => {
+                currentIndex = (currentIndex + 1) % activities.length;
+                updateCard();
+                
+                // Reset position for next card entry
+                card.style.transition = 'none';
+                card.style.transform = 'scale(0.9) translateY(20px)';
+                card.style.opacity = '0';
+                
+                requestAnimationFrame(() => {
+                    card.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease';
+                    card.style.transform = 'translateX(0) rotate(0) scale(1) translateY(0)';
+                    card.style.opacity = '1';
+                });
+            }, 350);
+        }
+
+        function updateCard() {
+            const data = activities[currentIndex];
+            document.getElementById('card-title').innerText = data.title;
+            document.getElementById('card-desc').innerText = data.desc;
+            document.getElementById('card-price').innerText = data.price;
+            document.getElementById('card-duration').innerText = data.duration;
+            // In a real app we'd swap images properly, here we update data-alt for the system
+            // Note: Placeholder management handled by the injection pipeline
+        }
+    </script>
+</body></html>

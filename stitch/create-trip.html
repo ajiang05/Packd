@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Packd - Create Trip</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom micro-interactions */
+        .input-focus-ring:focus-within {
+            box-shadow: 0 0 0 2px theme('colors.primary');
+        }
+        body {
+            background-color: #FDFBFA; /* bg-warm */
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-high": "#fde2e3",
+                      "on-primary-container": "#5d0019",
+                      "surface-container": "#ffe9e9",
+                      "on-primary": "#ffffff",
+                      "tertiary-fixed-dim": "#59df8a",
+                      "tertiary-fixed": "#77fca4",
+                      "accent-tint": "#FFE7EC",
+                      "on-primary-fixed": "#40000f",
+                      "error-container": "#ffdad6",
+                      "on-secondary-fixed-variant": "#474746",
+                      "tertiary-container": "#00a85a",
+                      "on-tertiary-container": "#003317",
+                      "surface-bright": "#FFE7EC",
+                      "on-secondary": "#ffffff",
+                      "surface-dim": "#efd4d5",
+                      "secondary-container": "#e2dfde",
+                      "on-error-container": "#93000a",
+                      "on-primary-fixed-variant": "#91002c",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-highest": "#f7dcdd",
+                      "background": "#FFE7EC",
+                      "on-tertiary": "#ffffff",
+                      "on-tertiary-fixed": "#00210d",
+                      "surface-tint": "#E13D59",
+                      "secondary": "#5f5e5e",
+                      "primary-fixed": "#ffdadb",
+                      "on-surface": "#1A1A1A",
+                      "inverse-surface": "#3d2c2d",
+                      "success": "#2BB673",
+                      "bg-warm": "#FDFBFA",
+                      "on-background": "#1A1A1A",
+                      "surface-variant": "#f7dcdd",
+                      "outline": "#8e7071",
+                      "ink-secondary": "#6B6B6B",
+                      "accent-dark": "#E13D59",
+                      "inverse-primary": "#ffb2b8",
+                      "inverse-on-surface": "#ffeced",
+                      "surface-container-low": "#fff0f0",
+                      "secondary-fixed": "#e5e2e1",
+                      "error": "#FF3B30",
+                      "surface": "#FFE7EC",
+                      "outline-variant": "#e2bec0",
+                      "on-tertiary-fixed-variant": "#005229",
+                      "border-subtle": "#EFECEA",
+                      "secondary-fixed-dim": "#c8c6c5",
+                      "primary-fixed-dim": "#ffb2b8",
+                      "on-error": "#ffffff",
+                      "tertiary": "#006d38",
+                      "primary-container": "#ff5470",
+                      "on-secondary-container": "#636262",
+                      "primary": "#E13D59",
+                      "on-surface-variant": "#5a4042",
+                      "on-secondary-fixed": "#1c1b1b"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "xl": "32px",
+                      "sm": "8px",
+                      "base": "8px",
+                      "md": "16px",
+                      "xs": "4px",
+                      "lg": "24px",
+                      "xxl": "48px",
+                      "edge-mobile": "20px"
+              },
+              "fontFamily": {
+                      "caption": ["Inter"],
+                      "label-caps": ["Inter"],
+                      "body-medium": ["Inter"],
+                      "h1": ["Inter"],
+                      "display": ["Inter"],
+                      "h2": ["Inter"],
+                      "body": ["Inter"]
+              },
+              "fontSize": {
+                      "caption": ["13px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                      "label-caps": ["11px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "body-medium": ["16px", {"lineHeight": "1.4", "fontWeight": "500"}],
+                      "h1": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                      "display": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                      "h2": ["18px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                      "body": ["16px", {"lineHeight": "1.4", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-bg-warm min-h-screen flex flex-col items-center justify-start text-on-surface">
+<!-- Top Navigation Bar (Minimized for Transactional Flow) -->
+<header class="w-full sticky top-0 z-40 flex justify-start items-center px-edge-mobile py-md bg-bg-warm">
+<button aria-label="Go back" class="flex items-center justify-center p-2 rounded-full hover:bg-surface-variant transition-colors active:scale-95">
+<span class="material-symbols-outlined text-on-surface-variant">arrow_back</span>
+</button>
+</header>
+<main class="w-full max-w-md px-edge-mobile flex-1 flex flex-col justify-center pb-xxl">
+<!-- Progress Indicator -->
+<div class="flex gap-2 mb-xl">
+<div class="h-1 flex-1 rounded-full bg-primary"></div>
+<div class="h-1 flex-1 rounded-full bg-border-subtle"></div>
+<div class="h-1 flex-1 rounded-full bg-border-subtle"></div>
+</div>
+<!-- Headline & Subtext -->
+<section class="mb-xxl">
+<h1 class="font-display text-display text-on-surface mb-xs tracking-tight">
+                Where are we going?
+            </h1>
+<p class="font-body text-body text-ink-secondary">
+                Give your adventure a name.
+            </p>
+</section>
+<!-- Main Input Container -->
+<div class="relative group">
+<input autofocus="" class="w-full bg-surface border-none rounded-[20px] p-md py-lg text-h2 font-h2 text-on-surface placeholder:text-on-surface-variant/40 shadow-[0_4px_16px_rgba(0,0,0,0.06)] focus:ring-2 focus:ring-primary outline-none transition-all duration-300" id="trip-name" placeholder="e.g., Amalfi Coast Summer" type="text"/>
+<div class="absolute right-md top-1/2 -translate-y-1/2 opacity-0 group-focus-within:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-primary">edit</span>
+</div>
+</div>
+<!-- Decorative Aesthetic Element: Abstract Map/Texture -->
+<div class="mt-xxl w-full aspect-video rounded-[20px] overflow-hidden opacity-80 mix-blend-multiply bg-surface-container">
+<div class="w-full h-full relative" data-alt="A soft-focus, minimalist travel photography shot of a winding road in the Italian countryside. The lighting is golden hour, warm and serene, with a high-key off-white aesthetic. The image is clean, editorial, and features subtle tones of muted terracotta and soft sage greens, perfectly complementing a premium travel app UI." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDwJDHCJ1K7_WF8d0db670KVuhZiA3YHaCoUMQK77mjE6smi8Zhi-6pKXbnB0jioXfSQvAylhF55A6Ojnex5msHuNFnrqAWKF48n6rVZlms0OnzY7rzalnIHQ8g4sFNn067eBAwlJALxM_p19I_PeKn27kxkDafhgQ9bHO7O-1hQpuo0k8XEsbOSa_5s4mZoIkJKiCPgzjjkzFKUOvXIxP4LsZ_rgOzO0-ZWu25NJdhgH79YkjlsUg7')">
+</div>
+</div>
+</main>
+<!-- Fixed Action Footer -->
+<footer class="fixed bottom-0 w-full max-w-md px-edge-mobile pb-xxl pt-md bg-gradient-to-t from-bg-warm via-bg-warm to-transparent">
+<button class="w-full h-[56px] bg-primary text-on-primary rounded-full font-body-medium text-body-medium shadow-lg hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2 group" id="next-btn">
+            Next
+            <span class="material-symbols-outlined text-[20px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</footer>
+<script>
+        // Simple micro-interaction for the input
+        const input = document.getElementById('trip-name');
+        const nextBtn = document.getElementById('next-btn');
+
+        input.addEventListener('input', (e) => {
+            if (e.target.value.trim().length > 0) {
+                nextBtn.classList.remove('opacity-50', 'pointer-events-none');
+                nextBtn.classList.add('translate-y-0');
+            } else {
+                nextBtn.classList.add('opacity-50', 'pointer-events-none');
+            }
+        });
+
+        // Initialize state
+        if (!input.value) {
+            nextBtn.classList.add('opacity-50', 'pointer-events-none');
+        }
+
+        // Action on next
+        nextBtn.addEventListener('click', () => {
+            // Success animation or navigation logic
+            nextBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">refresh</span>';
+            setTimeout(() => {
+                // Mock navigation
+                console.log('Navigating to step 2...');
+            }, 800);
+        });
+    </script>
+</body></html>
