@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Packd - Get Started</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed": "#00210d",
+                    "surface-container": "#ffe9e9",
+                    "on-secondary-fixed": "#1c1b1b",
+                    "on-secondary-container": "#636262",
+                    "surface-container-high": "#fde2e3",
+                    "tertiary-fixed": "#77fca4",
+                    "accent-tint": "#FFE7EC",
+                    "border-subtle": "#EFECEA",
+                    "secondary": "#5f5e5e",
+                    "secondary-container": "#e2dfde",
+                    "on-error-container": "#93000a",
+                    "on-tertiary-fixed-variant": "#005229",
+                    "bg-warm": "#FDFBFA",
+                    "on-primary-fixed": "#40000f",
+                    "primary-fixed": "#ffdadb",
+                    "on-surface": "#1A1A1A",
+                    "tertiary": "#006d38",
+                    "background": "#FFE7EC",
+                    "secondary-fixed-dim": "#c8c6c5",
+                    "inverse-on-surface": "#ffeced",
+                    "on-surface-variant": "#5a4042",
+                    "inverse-primary": "#ffb2b8",
+                    "on-primary-container": "#5d0019",
+                    "secondary-fixed": "#e5e2e1",
+                    "on-background": "#1A1A1A",
+                    "tertiary-fixed-dim": "#59df8a",
+                    "primary-container": "#ff5470",
+                    "on-secondary": "#ffffff",
+                    "surface-bright": "#FFE7EC",
+                    "inverse-surface": "#3d2c2d",
+                    "on-primary-fixed-variant": "#91002c",
+                    "error-container": "#ffdad6",
+                    "on-error": "#ffffff",
+                    "accent-dark": "#E13D59",
+                    "surface-container-highest": "#f7dcdd",
+                    "on-secondary-fixed-variant": "#474746",
+                    "surface-tint": "#E13D59",
+                    "outline": "#8e7071",
+                    "surface": "#FFE7EC",
+                    "outline-variant": "#e2bec0",
+                    "surface-variant": "#f7dcdd",
+                    "surface-dim": "#efd4d5",
+                    "ink-secondary": "#6B6B6B",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-low": "#fff0f0",
+                    "on-primary": "#ffffff",
+                    "primary-fixed-dim": "#ffb2b8",
+                    "primary": "#E13D59",
+                    "success": "#2BB673",
+                    "on-tertiary-container": "#003317",
+                    "tertiary-container": "#00a85a",
+                    "surface-container-lowest": "#ffffff",
+                    "error": "#FF3B30"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px",
+                    "card": "20px"
+            },
+            "spacing": {
+                    "xxl": "48px",
+                    "xl": "32px",
+                    "xs": "4px",
+                    "sm": "8px",
+                    "base": "8px",
+                    "lg": "24px",
+                    "edge-mobile": "20px",
+                    "md": "16px"
+            },
+            "fontFamily": {
+                    "h1": ["Inter"],
+                    "caption": ["Inter"],
+                    "body-medium": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "display": ["Inter"],
+                    "h2": ["Inter"],
+                    "body": ["Inter"]
+            },
+            "fontSize": {
+                    "h1": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "h1-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "caption": ["13px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                    "body-medium": ["16px", {"lineHeight": "1.4", "fontWeight": "500"}],
+                    "label-caps": ["11px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "display": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "h2": ["18px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "body": ["16px", {"lineHeight": "1.4", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+      body {
+        -webkit-tap-highlight-color: transparent;
+        font-family: 'Inter', sans-serif;
+      }
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .card-shadow {
+        box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      }
+    </style>
+</head>
+<body class="bg-bg-warm min-h-screen flex flex-col text-on-surface overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="w-full sticky top-0 z-40 bg-bg-warm flex justify-between items-center px-edge-mobile py-md w-full">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="menu">menu</span>
+</div>
+<h1 class="font-display text-display text-primary dark:text-primary tracking-tight">Packd</h1>
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-high border border-border-subtle">
+<img class="w-full h-full object-cover" data-alt="A clean, professional headshot of a smiling young traveler in their late 20s, with a soft-focus background of a sun-drenched European street. The lighting is warm and natural, aligning with the premium, minimalist aesthetic of the Packd travel app. The overall mood is approachable, modern, and high-end, featuring a color palette of soft creams and subtle skin tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBoxYqWRyGifIq23Q0W6zjD7epKPfOpd2k4yCbs01NmioB8M-vmEz4EhnePTB7PPLsf_BPpGotC0dna9X9TNhVVFO0ybWRb9uqj0p4t7FaBOS8UoAHFvdfp3YZxMtEn42oAzwFOVcRz_Pu_4jxO_uCW3oFRWSTp8QIbcSkWEkxG1piN_30E3YJbBSPSnH_5NDL60k2vM9rIMGR083CUaS6cJCQQ1EH8XCeg4aqpBir2vNvwSEoJ19XU"/>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col px-edge-mobile pt-xl pb-xxl max-w-md mx-auto w-full">
+<!-- Welcome Message -->
+<section class="mb-xl animate-in slide-in-from-bottom duration-700">
+<h2 class="font-display text-display text-on-surface mb-xs">Let's get going.</h2>
+<p class="font-body text-body text-on-surface-variant">Your next adventure starts with a single step. Choose how you want to begin.</p>
+</section>
+<!-- Action Cards Grid -->
+<div class="grid grid-cols-1 gap-md">
+<!-- Create a Trip Card -->
+<button class="group active:scale-[0.98] transition-transform duration-200 text-left">
+<div class="bg-surface rounded-card p-xl card-shadow flex flex-col items-start gap-lg border border-transparent hover:border-primary/10 transition-colors">
+<div class="w-14 h-14 rounded-full bg-accent-tint flex items-center justify-center text-primary group-hover:scale-110 transition-transform duration-300">
+<span class="material-symbols-outlined !text-[32px]" data-icon="add">add</span>
+</div>
+<div>
+<h3 class="font-h1 text-h1 text-on-surface">Create a Trip</h3>
+<p class="font-body text-body text-on-surface-variant mt-xs">Start a fresh plan, invite friends, and coordinate your itinerary.</p>
+</div>
+</div>
+</button>
+<!-- Join with Code Card -->
+<button class="group active:scale-[0.98] transition-transform duration-200 text-left">
+<div class="bg-surface rounded-card p-xl card-shadow flex flex-col items-start gap-lg border border-transparent hover:border-primary/10 transition-colors">
+<div class="w-14 h-14 rounded-full bg-secondary-container/30 flex items-center justify-center text-secondary group-hover:scale-110 transition-transform duration-300">
+<span class="material-symbols-outlined !text-[32px]" data-icon="vpn_key">vpn_key</span>
+</div>
+<div>
+<h3 class="font-h1 text-h1 text-on-surface">Join with Code</h3>
+<p class="font-body text-body text-on-surface-variant mt-xs">Have an invite? Enter the 6-digit code to join an existing group.</p>
+</div>
+</div>
+</button>
+</div>
+<!-- Secondary Guidance -->
+<div class="mt-auto pt-xl text-center">
+<p class="font-caption text-caption text-ink-secondary">
+                Need help? <a class="text-primary font-bold hover:underline" href="#">Explore our guide</a>
+</p>
+</div>
+</main>
+<!-- BottomNavBar (Suppressed for focused first-action screen per instructions, but kept hidden structural space if needed for logic) -->
+<!-- The user is in a focused journey ("First Action"), so navigation shell is suppressed to prioritize the Canvas. -->
+<script>
+        // Micro-interactions for tactile feel
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('touchstart', () => {
+                button.classList.add('opacity-90');
+            });
+            button.addEventListener('touchend', () => {
+                button.classList.remove('opacity-90');
+            });
+        });
+
+        // Atmospheric fade-in effect on load
+        window.addEventListener('DOMContentLoaded', () => {
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                document.body.style.transition = 'opacity 0.5s ease-in-out';
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body></html>

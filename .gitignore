@@ -24,3 +24,14 @@ yarn-debug.log
 .next/
 out/
 build/
+
+# Claude Code agent skills
+.agents/
+.claude/settings.local.json
+.claude/.headroom_wrap_marker.json
+
+# TokenSave local state
+.tokensave/
+
+# Graphify generated output
+graphify-out/
