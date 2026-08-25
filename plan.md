@@ -39,8 +39,9 @@ _Write user stories in the format: "As a student/Gen-z, I want to travel, so tha
   11.There should also be a activites geenrator based on where the user is going.
 
 Frontend
-1.I want it to have a sleek looking UI and UX similar to Hinge
-2.I also need this to be mobile friendly because having it mobile will allow people to use this on the go
+
+1. I want it to have a sleek looking UI and UX similar to Hinge
+2. I also need this to be mobile friendly because having it mobile will allow people to use this on the go
 
 - **Non-Functional:** Performance, security, or compliance requirements.
   1.It cannot be too laggy and users have to be able to use this this anywhere
@@ -53,7 +54,7 @@ Frontend
 
 ## 6. Technical Assumptions & Suggestions
 
-- **Tech Stack:** I have to use v0 vercel and some sort of AWS database(I have experience with postgres so something similar to that maybe). For frontent, maybe react. Maybe I have to use an ORM as well
+- **Tech Stack:** I have to use to use some sort of popular tool for swe roles that will look good on resume
 - **Suggested Architecture:** [Any libraries, APIs, or data models you want the agent to consider]
 
 ## 7. Open Questions
