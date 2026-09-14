@@ -4,8 +4,6 @@
 
 Packd helps groups turn travel ideas into agreed plans. Members contribute activity suggestions, vote on decisions, coordinate a schedule, and prepare personal packing checklists.
 
-The project will demonstrate practical software engineering through a deployed application, relational data modeling, secure APIs, automated testing, and reproducible delivery. Technologies should support real product requirements and provide design decisions we can explain in interviews.
-
 ## 2. Target Audience and Experience
 
 - Students, Gen Z travelers, friend groups, and organizations planning trips together.
@@ -16,19 +14,19 @@ The project will demonstrate practical software engineering through a deployed a
 
 Each file describes scope, proposed behavior, acceptance criteria, engineering considerations, and unresolved decisions. These are planning documents, not claims of implemented functionality. Proposed defaults may be refined before implementation.
 
-| Feature | Specification | Phase |
-| --- | --- | --- |
-| Accounts and sign-in | [Authentication](features/authentication.md) | MVP |
-| Trip creation and management | [Trips](features/trips.md) | MVP |
-| Invitations and member permissions | [Membership](features/membership.md) | MVP |
-| Trip budget | [Budgets](features/budgets.md) | MVP |
-| Activity suggestions | [Activities](features/activities.md) | MVP |
-| Group voting and participation | [Voting](features/voting.md) | MVP |
-| Shared schedule | [Itinerary](features/itinerary.md) | MVP |
-| Personal preparation | [Checklists](features/checklists.md) | MVP |
-| Google Calendar integration | [Calendar](features/calendar.md) | After MVP |
-| Destination-based suggestions | [Activity generator](features/activity-generator.md) | After MVP |
-| Voting reminders | [Reminders](features/reminders.md) | Optional extension |
+| Feature                            | Specification                                        | Phase              |
+| ---------------------------------- | ---------------------------------------------------- | ------------------ |
+| Accounts and sign-in               | [Authentication](features/authentication.md)         | MVP                |
+| Trip creation and management       | [Trips](features/trips.md)                           | MVP                |
+| Invitations and member permissions | [Membership](features/membership.md)                 | MVP                |
+| Trip budget                        | [Budgets](features/budgets.md)                       | MVP                |
+| Activity suggestions               | [Activities](features/activities.md)                 | MVP                |
+| Group voting and participation     | [Voting](features/voting.md)                         | MVP                |
+| Shared schedule                    | [Itinerary](features/itinerary.md)                   | MVP                |
+| Personal preparation               | [Checklists](features/checklists.md)                 | MVP                |
+| Google Calendar integration        | [Calendar](features/calendar.md)                     | After MVP          |
+| Destination-based suggestions      | [Activity generator](features/activity-generator.md) | After MVP          |
+| Voting reminders                   | [Reminders](features/reminders.md)                   | Optional extension |
 
 ## 4. Engineering Requirements and Methodologies
 
@@ -59,21 +57,21 @@ Payments, booking flights or hotels, expense settlement, multi-currency conversi
 
 ## 6. Technology and Architecture
 
-| Layer | Planned choice | Purpose |
-| --- | --- | --- |
-| Frontend | Next.js, React, TypeScript, Tailwind CSS | Existing foundation; responsive UI and static typing |
-| Backend | Next.js route handlers with feature-oriented service modules | REST API and centralized business logic |
-| Database | PostgreSQL | Relational data, constraints, transactions, indexes |
-| Database tooling | Prisma, proposed default | Typed database access and versioned migrations; Drizzle remains an alternative if a concrete need emerges |
-| Authentication | Established library with Google OAuth, provider/library to be selected | Account identity and session management |
-| API contract | OpenAPI and server-side schema validation | Documented, validated requests and responses |
-| Local environment | Docker and Docker Compose | Reproducible app and PostgreSQL startup |
-| Tests | Vitest, Playwright, PostgreSQL integration tests; optional Testcontainers | Business rules, database behavior, end-to-end flows |
-| CI/CD | GitHub Actions | Automated checks, container builds, deployment pipeline |
-| Hosting | Container-capable cloud host and managed PostgreSQL; provider TBD | Public application with persistent data |
-| Observability | Structured logs and OpenTelemetry | Debugging and measured request performance |
-| Optional jobs | Redis and a background worker when reminders are implemented | Scheduled work, retries, duplicate prevention |
-| Optional infrastructure | Kubernetes and Terraform after a working deployment | Deployment/scaling and infrastructure-as-code learning if relevant to target roles |
+| Layer                   | Planned choice                                                            | Purpose                                                                                                   |
+| ----------------------- | ------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Frontend                | Next.js, React, TypeScript, Tailwind CSS                                  | Existing foundation; responsive UI and static typing                                                      |
+| Backend                 | Next.js route handlers with feature-oriented service modules              | REST API and centralized business logic                                                                   |
+| Database                | PostgreSQL                                                                | Relational data, constraints, transactions, indexes                                                       |
+| Database tooling        | Prisma, proposed default                                                  | Typed database access and versioned migrations; Drizzle remains an alternative if a concrete need emerges |
+| Authentication          | Established library with Google OAuth, provider/library to be selected    | Account identity and session management                                                                   |
+| API contract            | OpenAPI and server-side schema validation                                 | Documented, validated requests and responses                                                              |
+| Local environment       | Docker and Docker Compose                                                 | Reproducible app and PostgreSQL startup                                                                   |
+| Tests                   | Vitest, Playwright, PostgreSQL integration tests; optional Testcontainers | Business rules, database behavior, end-to-end flows                                                       |
+| CI/CD                   | GitHub Actions                                                            | Automated checks, container builds, deployment pipeline                                                   |
+| Hosting                 | Container-capable cloud host and managed PostgreSQL; provider TBD         | Public application with persistent data                                                                   |
+| Observability           | Structured logs and OpenTelemetry                                         | Debugging and measured request performance                                                                |
+| Optional jobs           | Redis and a background worker when reminders are implemented              | Scheduled work, retries, duplicate prevention                                                             |
+| Optional infrastructure | Kubernetes and Terraform after a working deployment                       | Deployment/scaling and infrastructure-as-code learning if relevant to target roles                        |
 
 Request flow: React UI → Next.js REST endpoints → feature services → Prisma → PostgreSQL. Keep authorization and business rules on the server. The root `features/` folder contains specifications; application code remains under `frontend/` until a documented architectural change is justified.
 

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Packd - Checklist</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#E13D59",
+                    "outline": "#8e7071",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary": "#006d38",
+                    "surface-tint": "#E13D59",
+                    "secondary-fixed": "#e5e2e1",
+                    "on-secondary": "#ffffff",
+                    "inverse-primary": "#ffb2b8",
+                    "surface-container": "#ffe9e9",
+                    "surface-container-high": "#fde2e3",
+                    "background": "#FFE7EC",
+                    "on-primary": "#ffffff",
+                    "surface-container-low": "#fff0f0",
+                    "on-secondary-fixed": "#1c1b1b",
+                    "ink-secondary": "#6B6B6B",
+                    "bg-warm": "#FDFBFA",
+                    "border-subtle": "#EFECEA",
+                    "on-tertiary-fixed": "#00210d",
+                    "primary-container": "#ff5470",
+                    "secondary-container": "#e2dfde",
+                    "on-secondary-fixed-variant": "#474746",
+                    "on-error-container": "#93000a",
+                    "on-background": "#1A1A1A",
+                    "on-primary-container": "#5d0019",
+                    "on-surface": "#1A1A1A",
+                    "accent-tint": "#FFE7EC",
+                    "tertiary-fixed-dim": "#59df8a",
+                    "primary-fixed": "#ffdadb",
+                    "on-secondary-container": "#636262",
+                    "surface-container-highest": "#f7dcdd",
+                    "surface": "#FFE7EC",
+                    "on-tertiary-fixed-variant": "#005229",
+                    "accent-dark": "#E13D59",
+                    "on-primary-fixed": "#40000f",
+                    "secondary": "#5f5e5e",
+                    "on-tertiary": "#ffffff",
+                    "error": "#FF3B30",
+                    "surface-variant": "#f7dcdd",
+                    "surface-bright": "#FFE7EC",
+                    "outline-variant": "#e2bec0",
+                    "inverse-on-surface": "#ffeced",
+                    "on-tertiary-container": "#003317",
+                    "tertiary-fixed": "#77fca4",
+                    "on-primary-fixed-variant": "#91002c",
+                    "on-surface-variant": "#5a4042",
+                    "on-error": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "success": "#2BB673",
+                    "primary-fixed-dim": "#ffb2b8",
+                    "tertiary-container": "#00a85a",
+                    "surface-dim": "#efd4d5",
+                    "secondary-fixed-dim": "#c8c6c5",
+                    "inverse-surface": "#3d2c2d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xl": "32px",
+                    "xxl": "48px",
+                    "lg": "24px",
+                    "md": "16px",
+                    "sm": "8px",
+                    "edge-mobile": "20px",
+                    "base": "8px",
+                    "xs": "4px"
+            },
+            "fontFamily": {
+                    "display": ["Inter", "sans-serif"],
+                    "body-medium": ["Inter", "sans-serif"],
+                    "body": ["Inter", "sans-serif"],
+                    "h2": ["Inter", "sans-serif"],
+                    "h1": ["Inter", "sans-serif"],
+                    "label-caps": ["Inter", "sans-serif"],
+                    "caption": ["Inter", "sans-serif"]
+            },
+            "fontSize": {
+                    "display": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "body-medium": ["16px", {"lineHeight": "1.4", "fontWeight": "500"}],
+                    "body": ["16px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                    "h2": ["18px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "h1": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "label-caps": ["11px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "caption": ["13px", {"lineHeight": "1.4", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .checklist-item-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .checkbox-custom:checked + .checkbox-label {
+            color: #6B6B6B;
+            text-decoration: line-through;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            user-select: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-bg-warm text-on-surface font-body min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="w-full sticky top-0 z-40 bg-bg-warm flex justify-between items-center px-edge-mobile py-md">
+<div class="flex items-center gap-4">
+<button class="active:scale-95 transition-transform hover:opacity-80">
+<span class="material-symbols-outlined text-primary" data-icon="menu">menu</span>
+</button>
+<h1 class="font-display text-display text-primary tracking-tight">Packd</h1>
+</div>
+<div class="w-10 h-10 rounded-full overflow-hidden bg-secondary-container active:scale-95 transition-transform">
+<img class="w-full h-full object-cover" data-alt="A clean, minimalist portrait of a modern traveler in soft morning light. The background is a blurred warm-toned interior, matching the Packd brand palette of soft creams and subtle coral accents. The individual looks calm and ready for a journey, embodying the organized and sophisticated aesthetic of the app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9SFywFAcsbwA2eGPjv3ErKUKWEbnYGhSn99BVzrwZmg7mqKtN8bBfzbC2P3mzeFnymq2mLDdygElVTPqMKeaHY_UteFKB3WAcjXnlR9eF13N56HWptf_wFq9ZPA4DreLDzSMAzZcWznqlZSMJbtuOVG3HFTVeFvk5wswrkHsuHsnjR6TIHuBOdSFzhBa6T0n_na7QEmgZjBPPLK8ckqHaOMk9Im0QQuUZPsq-uX2xIYwmD9fwV1d1"/>
+</div>
+</header>
+<main class="px-edge-mobile mt-lg">
+<!-- Header -->
+<div class="mb-xl">
+<h2 class="font-h1 text-h1 text-on-surface">Checklist</h2>
+</div>
+<!-- Trip Section: Amalfi Coast -->
+<section class="mb-xxl">
+<div class="flex items-center justify-between mb-md">
+<h3 class="font-h2 text-h2 text-on-surface">Amalfi Coast</h3>
+<span class="font-label-caps text-label-caps text-primary bg-accent-tint px-sm py-xs rounded-full">ACTIVE</span>
+</div>
+<div class="bg-surface rounded-xl overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.06)] border border-border-subtle">
+<!-- Checklist Row -->
+<label class="flex items-center p-md border-b border-border-subtle cursor-pointer hover:bg-bg-warm transition-colors checklist-item-transition">
+<input class="checkbox-custom w-6 h-6 border-2 border-primary rounded-xl appearance-none checked:bg-primary checked:border-primary transition-all relative after:content-['✓'] after:absolute after:hidden after:checked:block after:text-white after:text-sm after:font-bold after:left-1/2 after:-translate-x-1/2 after:top-1/2 after:-translate-y-1/2" type="checkbox"/>
+<span class="checkbox-label ml-md font-body text-on-surface">Pack sunscreen (SPF 50+)</span>
+</label>
+<!-- Checklist Row -->
+<label class="flex items-center p-md border-b border-border-subtle cursor-pointer hover:bg-bg-warm transition-colors checklist-item-transition">
+<input class="checkbox-custom w-6 h-6 border-2 border-primary rounded-xl appearance-none checked:bg-primary checked:border-primary transition-all relative after:content-['✓'] after:absolute after:hidden after:checked:block after:text-white after:text-sm after:font-bold after:left-1/2 after:-translate-x-1/2 after:top-1/2 after:-translate-y-1/2" type="checkbox"/>
+<span class="checkbox-label ml-md font-body text-on-surface">Print boarding pass</span>
+</label>
+<!-- Checklist Row -->
+<label class="flex items-center p-md cursor-pointer hover:bg-bg-warm transition-colors checklist-item-transition">
+<input class="checkbox-custom w-6 h-6 border-2 border-primary rounded-xl appearance-none checked:bg-primary checked:border-primary transition-all relative after:content-['✓'] after:absolute after:hidden after:checked:block after:text-white after:text-sm after:font-bold after:left-1/2 after:-translate-x-1/2 after:top-1/2 after:-translate-y-1/2" type="checkbox"/>
+<span class="checkbox-label ml-md font-body text-on-surface">Confirm hotel booking</span>
+</label>
+</div>
+</section>
+<!-- Trip Section: Tokyo Adventure -->
+<section class="mb-xxl">
+<div class="flex items-center justify-between mb-md">
+<h3 class="font-h2 text-h2 text-on-surface">Tokyo Adventure</h3>
+<span class="font-label-caps text-label-caps text-ink-secondary bg-secondary-container px-sm py-xs rounded-full uppercase">Upcoming</span>
+</div>
+<div class="bg-surface rounded-xl overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.06)] border border-border-subtle">
+<!-- Checklist Row -->
+<label class="flex items-center p-md border-b border-border-subtle cursor-pointer hover:bg-bg-warm transition-colors checklist-item-transition">
+<input class="checkbox-custom w-6 h-6 border-2 border-primary rounded-xl appearance-none checked:bg-primary checked:border-primary transition-all relative after:content-['✓'] after:absolute after:hidden after:checked:block after:text-white after:text-sm after:font-bold after:left-1/2 after:-translate-x-1/2 after:top-1/2 after:-translate-y-1/2" type="checkbox"/>
+<span class="checkbox-label ml-md font-body text-on-surface">Exchange Yen (¥50,000)</span>
+</label>
+<!-- Checklist Row -->
+<label class="flex items-center p-md border-b border-border-subtle cursor-pointer hover:bg-bg-warm transition-colors checklist-item-transition">
+<input class="checkbox-custom w-6 h-6 border-2 border-primary rounded-xl appearance-none checked:bg-primary checked:border-primary transition-all relative after:content-['✓'] after:absolute after:hidden after:checked:block after:text-white after:text-sm after:font-bold after:left-1/2 after:-translate-x-1/2 after:top-1/2 after:-translate-y-1/2" type="checkbox"/>
+<span class="checkbox-label ml-md font-body text-on-surface">Rent pocket Wi-Fi</span>
+</label>
+<!-- Checklist Row -->
+<label class="flex items-center p-md cursor-pointer hover:bg-bg-warm transition-colors checklist-item-transition">
+<input class="checkbox-custom w-6 h-6 border-2 border-primary rounded-xl appearance-none checked:bg-primary checked:border-primary transition-all relative after:content-['✓'] after:absolute after:hidden after:checked:block after:text-white after:text-sm after:font-bold after:left-1/2 after:-translate-x-1/2 after:top-1/2 after:-translate-y-1/2" type="checkbox"/>
+<span class="checkbox-label ml-md font-body text-on-surface">Pack comfortable walking shoes</span>
+</label>
+</div>
+</section>
+<!-- Empty Add Button (Micro-interaction hint) -->
+<button class="w-full py-md border-2 border-dashed border-border-subtle rounded-xl flex items-center justify-center gap-2 text-ink-secondary hover:text-primary hover:border-primary transition-all active:scale-[0.98]">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+<span class="font-body-medium text-body-medium">Add new item</span>
+</button>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-8 pt-3 bg-surface border-t border-border-subtle shadow-[0_-4px_16px_rgba(0,0,0,0.06)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary/80 transition-opacity active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="luggage">luggage</span>
+<span class="font-label-caps text-label-caps">Trips</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary/80 transition-opacity active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-label-caps text-label-caps">Activities</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary font-bold hover:text-primary/80 transition-opacity active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="fact_check" style="font-variation-settings: 'FILL' 1;">fact_check</span>
+<span class="font-label-caps text-label-caps">Checklist</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary/80 transition-opacity active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-caps text-label-caps">Profile</span>
+</a>
+</nav>
+<script>
+        // Micro-interactions for the checklist items
+        document.querySelectorAll('.checkbox-custom').forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+                const label = e.target.nextElementSibling;
+                if (e.target.checked) {
+                    label.style.opacity = '0.5';
+                    // Optional: ripple or sound effect logic here
+                } else {
+                    label.style.opacity = '1';
+                }
+            });
+        });
+    </script>
+</body></html>

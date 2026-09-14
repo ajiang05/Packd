@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Packd - Budget</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#FFE7EC",
+                        "surface-container-highest": "#f7dcdd",
+                        "tertiary-container": "#00a85a",
+                        "surface": "#FFE7EC",
+                        "on-tertiary": "#ffffff",
+                        "inverse-primary": "#ffb2b8",
+                        "on-tertiary-container": "#003317",
+                        "outline-variant": "#e2bec0",
+                        "primary-fixed-dim": "#ffb2b8",
+                        "on-surface": "#1A1A1A",
+                        "error": "#FF3B30",
+                        "tertiary-fixed-dim": "#59df8a",
+                        "background": "#FFE7EC",
+                        "surface-container-high": "#fde2e3",
+                        "surface-variant": "#f7dcdd",
+                        "ink-secondary": "#6B6B6B",
+                        "bg-warm": "#FDFBFA",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#636262",
+                        "accent-tint": "#FFE7EC",
+                        "surface-dim": "#efd4d5",
+                        "on-surface-variant": "#5a4042",
+                        "error-container": "#ffdad6",
+                        "primary": "#E13D59",
+                        "on-background": "#1A1A1A",
+                        "on-secondary": "#ffffff",
+                        "success": "#2BB673",
+                        "on-tertiary-fixed-variant": "#005229",
+                        "primary-fixed": "#ffdadb",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "tertiary": "#006d38",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "inverse-on-surface": "#ffeced",
+                        "accent-dark": "#E13D59",
+                        "on-primary-fixed": "#40000f",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed": "#00210d",
+                        "primary-container": "#ff5470",
+                        "on-primary-fixed-variant": "#91002c",
+                        "border-subtle": "#EFECEA",
+                        "secondary": "#5f5e5e",
+                        "on-secondary-fixed-variant": "#474746",
+                        "on-primary-container": "#5d0019",
+                        "secondary-container": "#e2dfde",
+                        "on-primary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "inverse-surface": "#3d2c2d",
+                        "tertiary-fixed": "#77fca4",
+                        "outline": "#8e7071",
+                        "surface-tint": "#E13D59",
+                        "surface-container": "#ffe9e9",
+                        "secondary-fixed": "#e5e2e1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "md": "16px",
+                        "base": "8px",
+                        "xl": "32px",
+                        "xxl": "48px",
+                        "lg": "24px",
+                        "edge-mobile": "20px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "body": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "h2": ["Inter"],
+                        "h1": ["Inter"],
+                        "body-medium": ["Inter"],
+                        "display": ["Inter"],
+                        "caption": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body": ["16px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                        "label-caps": ["11px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "h2": ["18px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "h1": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "body-medium": ["16px", {"lineHeight": "1.4", "fontWeight": "500"}],
+                        "display": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "caption": ["13px", {"lineHeight": "1.4", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #FDFBFA;
+            font-family: 'Inter', sans-serif;
+            color: #1A1A1A;
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-shadow {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+        }
+        .accent-button {
+            background-color: #ff5470;
+            color: white;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .accent-button:active {
+            transform: scale(0.96);
+            background-color: #E13D59;
+        }
+        .progress-bar-fill {
+            transition: width 1s ease-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-32">
+<!-- Top AppBar (JSON Derived) -->
+<header class="w-full sticky top-0 z-40 bg-bg-warm flex justify-between items-center px-edge-mobile py-md w-full">
+<div class="flex items-center gap-2">
+<button class="active:scale-95 transition-transform hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-primary">menu</span>
+</button>
+<h1 class="font-display text-display text-primary tracking-tight">Packd</h1>
+</div>
+<div class="flex items-center">
+<div class="w-10 h-10 rounded-full bg-surface-container overflow-hidden border-2 border-primary-container">
+<img class="w-full h-full object-cover" data-alt="A close-up portrait of a friendly young traveler with a bright smile, looking directly at the camera. The lighting is warm and natural, suggesting a sunset in a scenic coastal location like the Amalfi Coast. The overall aesthetic is clean and high-end, using a soft depth of field to keep the focus on the user profile avatar." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeNUbWDUPgI6o3BNiVdU9arU7JsfhQkaayb-jB4t6tAyscCYNHMMSTWLzmDrcqOUQAZonSr6oQQc17azz3VUdj2tnPe1ctTChKqyhtNJ4HyrX_Gw06z9-StQdWtYM7KR7cuXgSuPVg1nxFdFXIo8mtDTu8cdkQrVApstlPEvozBX0mbMI1KTy-Cqvd09QHob1cGdgQ8NVeo6yPF5nFcuA-0EnoCjWj2zwV4503WmQdw6P8XDzPbYn-"/>
+</div>
+</div>
+</header>
+<main class="px-edge-mobile max-w-lg mx-auto">
+<!-- Breadcrumb / Context -->
+<div class="mt-md mb-xl">
+<div class="flex items-center gap-2 text-ink-secondary">
+<span class="font-label-caps text-label-caps uppercase tracking-widest">Amalfi Coast</span>
+<span class="w-1 h-1 rounded-full bg-ink-secondary/30"></span>
+<span class="font-label-caps text-label-caps uppercase tracking-widest text-primary">Budget</span>
+</div>
+</div>
+<!-- Hero Budget Card -->
+<section class="mb-xl text-center">
+<div class="font-caption text-caption text-ink-secondary mb-xs">Total Estimated Budget</div>
+<div class="font-display text-[48px] font-extrabold text-primary leading-tight mb-xs">
+                $2,400
+            </div>
+<div class="font-body-medium text-body-medium text-ink-secondary mb-lg">
+                $600 <span class="opacity-60">/ person</span>
+</div>
+<!-- Progress Visualization -->
+<div class="bg-white p-lg rounded-[20px] custom-shadow">
+<div class="flex justify-between items-end mb-sm">
+<div class="text-left">
+<div class="font-label-caps text-label-caps text-ink-secondary mb-1">CONTRIBUTED</div>
+<div class="font-h1 text-h1">$1,850</div>
+</div>
+<div class="text-right">
+<div class="font-label-caps text-label-caps text-ink-secondary mb-1">TARGET</div>
+<div class="font-body-medium text-body-medium">$2,400</div>
+</div>
+</div>
+<!-- Progress Bar -->
+<div class="h-3 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="progress-bar-fill h-full bg-primary-container" style="width: 77%"></div>
+</div>
+<div class="mt-md flex justify-center">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-accent-tint text-primary font-label-caps text-[10px] rounded-full">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                        $550 REMAINING
+                    </span>
+</div>
+</div>
+</section>
+<!-- Trip Members Section -->
+<section>
+<div class="flex justify-between items-center mb-md">
+<h2 class="font-h2 text-h2">Trip Members</h2>
+<button class="text-primary font-body-medium text-caption hover:underline transition-all">Split Details</button>
+</div>
+<div class="space-y-md">
+<!-- Member Row: Sarah -->
+<div class="flex items-center justify-between p-md bg-white rounded-[20px] custom-shadow">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-full overflow-hidden border border-border-subtle bg-surface">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a smiling woman with glasses, Sarah J., set against a minimalist architectural background with clean lines and warm lighting. The image maintains the minimal Packd aesthetic with soft focus and a premium feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwSbS3bo-8OJRH2LL_oBHpMcWoEeyYzbBEM0XlaTgsRw9UCxCCx-kNuQFkm3SpXeYNQf2wgBdjOpAaE6OnS2pG80CSadmFAy3fYe33-0aGPY2IcUBIupaFVPU0VTSQIGrDCXW4o57QqhT6mNCTt0fI9jedX_WJT3BMNqHubS4AIKWzCkJtJ081wXiMQOWOg7S5AXfESginiY4jO4OFGgrB6kHE5by-MimEFjLl3ShypqJJQYZvnINa"/>
+</div>
+<div>
+<div class="font-body-medium text-body-medium">Sarah J.</div>
+<div class="font-caption text-caption text-ink-secondary">Paid Full Share</div>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<div class="font-body-medium text-body-medium text-success flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+                            $600
+                        </div>
+<div class="text-[10px] font-label-caps text-ink-secondary opacity-50 uppercase">PAID</div>
+</div>
+</div>
+<!-- Member Row: Mike -->
+<div class="flex items-center justify-between p-md bg-white rounded-[20px] custom-shadow">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-full overflow-hidden border border-border-subtle bg-surface">
+<img class="w-full h-full object-cover" data-alt="A portrait of Mike R., a man in his late 20s wearing a casual linen shirt, looking relaxed in a bright, airy environment with hints of Mediterranean greenery. The image is high-end, featuring soft natural lighting and a warm color palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWhyvAMf8utYaO4vxm7F4Ct3ZGKXIYvqohGqc1yDIYBrtoj6UkW5mWuquFn2bWp9zeQWKb5q6hpiHSCW4NLrUVVSzpPnbfNs0GUDkozr6F0BisL-79Z-ugypEQUuDmWs3DiS7fdMOUjK1CwklBqpBy_40_5bP_6lwJf2xEKKTUjbFGJVkboIu-lPPI27CbfGRl7C16YUReZpUNQNCSrClclsurKS9WxmURig-bKdjDRJr2s6vd4DMV"/>
+</div>
+<div>
+<div class="font-body-medium text-body-medium">Mike R.</div>
+<div class="font-caption text-caption text-ink-secondary">Partial Contribution</div>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<div class="font-body-medium text-body-medium text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">pending</span>
+                            $450
+                        </div>
+<div class="text-[10px] font-label-caps text-ink-secondary opacity-50 uppercase">PENDING $150</div>
+</div>
+</div>
+<!-- Member Row: David -->
+<div class="flex items-center justify-between p-md bg-white rounded-[20px] custom-shadow">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-full overflow-hidden border border-border-subtle bg-surface">
+<img class="w-full h-full object-cover" data-alt="A portrait of David L., showing a friendly, adventurous personality. He is outdoors in a sun-drenched environment, evoking the feeling of a summer trip to the Amalfi Coast. The photography style is modern and editorial, with a warm off-white color grade." src="https://lh3.googleusercontent.com/aida-public/AB6AXuARc5kicOQI-wq_NTyQuZ_zlO1jxr3izwJTbMhnQelhn02D52bGzSYSqakvt7PcOakxoll2lHCB0yAUfUWtbochqFNpPuRkYPn-siVGJ9_TsSBqeVjLOmMSM1WVuUSYXnUXDD9VA688TFTc0sSHmnFYcbvpEIZoeOpc9cHvJqMjZhlIt5SWjp8lo20YXVNOHCGUpNW0xPcXiD-S4aW1eoijN3zKIR7QjAqDTlZlGu9Uzt5dYCxQPZH6"/>
+</div>
+<div>
+<div class="font-body-medium text-body-medium">David L.</div>
+<div class="font-caption text-caption text-ink-secondary">Confirmed Payment</div>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<div class="font-body-medium text-body-medium text-success flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+                            $600
+                        </div>
+<div class="text-[10px] font-label-caps text-ink-secondary opacity-50 uppercase">PAID</div>
+</div>
+</div>
+<!-- Member Row: You -->
+<div class="flex items-center justify-between p-md bg-white rounded-[20px] custom-shadow border-2 border-accent-tint">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-full overflow-hidden border border-border-subtle bg-primary-container/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">person</span>
+</div>
+<div>
+<div class="font-body-medium text-body-medium">You (Alex)</div>
+<div class="font-caption text-caption text-ink-secondary">Deposit Only</div>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<div class="font-body-medium text-body-medium text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">pending</span>
+                            $200
+                        </div>
+<div class="text-[10px] font-label-caps text-ink-secondary opacity-50 uppercase">PENDING $400</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Aesthetic Decoration -->
+<div class="mt-xl h-64 rounded-[20px] overflow-hidden relative group">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
+<div class="absolute bottom-md left-md z-20 text-white">
+<div class="font-label-caps text-label-caps text-white/80 uppercase mb-1">Up Next</div>
+<div class="font-h2 text-h2">Villa San Giacomo Stay</div>
+<div class="font-caption text-caption text-white/70">Estimated: $850.00</div>
+</div>
+<div class="w-full h-full bg-center bg-cover transition-transform duration-700 group-hover:scale-110" data-alt="A breathtaking view of a luxurious Mediterranean villa overlooking the deep blue waters of the Amalfi Coast. The scene is bathed in golden hour sunlight, highlighting the intricate pastel-colored architecture and lush lemon groves. The overall mood is high-end, aspirational, and serene, fitting the Packd travel brand." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB5tqIblp6ieiJh816maoJaciRH8ltnLp296DUBHKwH1j-ScyXjtNYyIEVB_2XDN9SqE2mT30Ipe1M5CiwAch8LQXtz-QcW17ndZ04uteoLjEsCA5FxSuLlhbWIzahfA9x5lgyh4eeY5wjHKR6IkTS-x25LNXgMYw3HQhwOpJ2XtCj68MjxtVlLt_cclraz0JqE_XDUN1KgM6J56VGfz-RAzbz3sOCKTFTWRmATR6uOV40811vhAddc')"></div>
+</div>
+</main>
+<!-- Bottom Navigation Shell (JSON Derived) -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-8 pt-3 bg-surface shadow-[0_-4px_16px_rgba(0,0,0,0.06)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary/80 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="luggage">luggage</span>
+<span class="font-label-caps text-label-caps">Trips</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary/80 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-label-caps text-label-caps">Activities</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary font-bold active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="fact_check">fact_check</span>
+<span class="font-label-caps text-label-caps">Checklist</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary/80 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-caps text-label-caps">Profile</span>
+</a>
+</nav>
+<!-- FAB Content -->
+<div class="fixed bottom-[100px] left-1/2 -translate-x-1/2 w-full max-w-lg px-edge-mobile z-40">
+<button class="accent-button w-full py-md rounded-[20px] font-body-medium text-body-medium shadow-lg flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">add_circle</span>
+            Add Expense
+        </button>
+</div>
+<!-- Simple Interaction Script -->
+<script>
+        // Micro-interaction for clicking member cards
+        document.querySelectorAll('.space-y-md > div').forEach(card => {
+            card.addEventListener('click', () => {
+                card.classList.add('scale-[0.98]');
+                setTimeout(() => {
+                    card.classList.remove('scale-[0.98]');
+                }, 100);
+            });
+        });
+
+        // Initialize progress bar width on load for a smooth animation effect
+        window.onload = () => {
+            const bar = document.querySelector('.progress-bar-fill');
+            bar.style.width = '0%';
+            setTimeout(() => {
+                bar.style.width = '77%';
+            }, 300);
+        };
+    </script>
+</body></html>

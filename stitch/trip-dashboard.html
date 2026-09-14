@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Packd - Trip Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-tab .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom smooth scroll and scrollbar hidden for cleaner look */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "bg-warm": "#FDFBFA",
+                        "on-secondary-container": "#636262",
+                        "tertiary-fixed": "#77fca4",
+                        "surface-container": "#ffe9e9",
+                        "tertiary-fixed-dim": "#59df8a",
+                        "on-secondary-fixed-variant": "#474746",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed-dim": "#ffb2b8",
+                        "on-primary-fixed-variant": "#91002c",
+                        "surface-dim": "#efd4d5",
+                        "accent-tint": "#FFE7EC",
+                        "inverse-on-surface": "#ffeced",
+                        "error": "#FF3B30",
+                        "outline": "#8e7071",
+                        "surface-container-high": "#fde2e3",
+                        "on-primary-fixed": "#40000f",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#ffdadb",
+                        "on-background": "#1A1A1A",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "inverse-primary": "#ffb2b8",
+                        "background": "#FFE7EC",
+                        "on-error": "#ffffff",
+                        "surface": "#FFE7EC",
+                        "on-surface": "#1A1A1A",
+                        "accent-dark": "#E13D59",
+                        "on-primary-container": "#5d0019",
+                        "primary-container": "#ff5470",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "secondary-fixed": "#e5e2e1",
+                        "success": "#2BB673",
+                        "surface-container-highest": "#f7dcdd",
+                        "ink-secondary": "#6B6B6B",
+                        "surface-bright": "#FFE7EC",
+                        "secondary-container": "#e2dfde",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-container": "#003317",
+                        "surface-variant": "#f7dcdd",
+                        "on-primary": "#ffffff",
+                        "outline-variant": "#e2bec0",
+                        "on-tertiary-fixed-variant": "#005229",
+                        "on-surface-variant": "#5a4042",
+                        "surface-container-low": "#fff0f0",
+                        "inverse-surface": "#3d2c2d",
+                        "on-tertiary-fixed": "#00210d",
+                        "surface-tint": "#E13D59",
+                        "tertiary-container": "#00a85a",
+                        "primary": "#E13D59",
+                        "border-subtle": "#EFECEA",
+                        "on-error-container": "#93000a",
+                        "error-container": "#ffdad6",
+                        "tertiary": "#006d38",
+                        "secondary": "#5f5e5e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "12px",
+                        "2xl": "20px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xxl": "48px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "edge-mobile": "20px",
+                        "lg": "24px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "display": ["Inter", "sans-serif"],
+                        "h1": ["Inter", "sans-serif"],
+                        "h2": ["Inter", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "caption": ["Inter", "sans-serif"],
+                        "label-caps": ["Inter", "sans-serif"],
+                        "body-medium": ["Inter", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "display": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "h1": ["24px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "h1-mobile": ["22px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "h2": ["18px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "body": ["16px", { "lineHeight": "1.4", "fontWeight": "400" }],
+                        "caption": ["13px", { "lineHeight": "1.4", "fontWeight": "400" }],
+                        "label-caps": ["11px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-medium": ["16px", { "lineHeight": "1.4", "fontWeight": "500" }]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-bg-warm font-body text-on-background min-h-screen">
+<!-- TopAppBar -->
+<header class="w-full sticky top-0 z-40 bg-bg-warm flex justify-between items-center px-edge-mobile py-md">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary cursor-pointer active:scale-95 transition-transform" data-icon="menu">menu</span>
+<h1 class="font-display text-h1 text-primary tracking-tight">Packd</h1>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden border border-border-subtle hover:opacity-80 transition-opacity cursor-pointer active:scale-95 transition-transform">
+<img class="w-full h-full object-cover" data-alt="A professional and friendly headshot of a young traveler with a warm smile, set against a soft-focus minimalist background. The lighting is natural and bright, matching the high-end off-white aesthetic of the UI. The composition is clean, centered, and sophisticated, reflecting a modern premium app user profile." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBDjp8aAwwrbM97qIE5b6TVm2kq12FgtJTZCg2BNW2g_qB_RRDlk0vDf24uiJjSlWE3D62sAwZn2rdePmKNgp_9u8yh7eVWe-rbl6CONoC2QEzjMAPfkCAerK8bZ0WoEd5vav0OeBHkNCuneakKenf06a-JyP-VJp_-FTm0fXCvPfFQkTakjXdupdYuVCrRNv3HmDrewIhiKPHDka9U61K_gieCwQvsyenwiVyORzmyQIxRYl1t-Gy"/>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="px-edge-mobile pt-sm pb-32 max-w-2xl mx-auto">
+<!-- Welcome Section -->
+<section class="mb-xl">
+<p class="font-body-medium text-on-secondary-container">Welcome back, Sarah</p>
+<h2 class="font-display text-display text-on-background mt-xs">Your Trips</h2>
+</section>
+<!-- Trips List -->
+<div class="space-y-lg">
+<!-- Trip Card: Amalfi Coast -->
+<article class="group relative bg-white rounded-2xl overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.06)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.1)] transition-all duration-300 active:scale-[0.98] cursor-pointer">
+<div class="h-48 w-full relative overflow-hidden">
+<div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-700" data-alt="A breathtaking view of the Amalfi Coast with pastel-colored buildings clinging to steep cliffs overlooking a sparkling turquoise Mediterranean Sea. The sunlight is warm and golden, casting soft shadows. The overall feel is editorial, romantic, and high-end, using a vibrant yet natural color palette that complements the coral primary accent of the application." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDi4EYoBrFPKESiqYUvbnIVafVxQ2JzY2OYKstRY31LhDIsKpqCZEZKnJ1WadtndRn6dvybEyLDHC2_lQ0ZKND3uKkcIi6jEwxeAYsMUVg7e8AnuNrxE3tlBvWbvxap0FeBQXYeV5iHd6KTTbSx0A-WbZdiKXLYn_WLiy8Na6-e-dzTsUe6zCsfcOzncGl2oEjeVUg8QiF47P8n2LWeafKSgAifpv5iw2TSfDe5Cik1an_jiY7MZh2v')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+</div>
+<div class="p-md flex justify-between items-end">
+<div>
+<h3 class="font-h1 text-h2 text-on-background">Amalfi Coast</h3>
+<p class="font-caption text-ink-secondary mt-1">Aug 12 - Aug 19</p>
+</div>
+<div class="flex -space-x-3">
+<div class="w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-surface-variant">
+<img class="w-full h-full object-cover" data-alt="Close up portrait of a young woman traveler with sunglasses, bright natural lighting, minimalist aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBb9_GSqNiefBAf-UwpGtifbSLMMCvCkNlr28PvChPwrDLcLLFkLHZnDhmjYrueq4SQ1M7mmHwZY0BB7ZiiEFKMRtDMpNKe8_QMZs576Zz2H8MUcO5VGwLdd_2nfK08DH8fKN2X7ySU5Si7Rgr0gD-hr33fVmxpOtxTQmX1pCMOKCarAartFBEqpPtc8dLGIYTD57e0NOA8j9BaNqffijhF6P2CS_dLIjcJTxrl6lf9bjMb90qHqxll"/>
+</div>
+<div class="w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-surface-variant">
+<img class="w-full h-full object-cover" data-alt="Close up portrait of a young man smiling, bright natural lighting, soft focus travel vibe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3m0AezVEL0X4DcxHCwBve_yNlZimkOmXlQIXdSHbkc2zEbFoc1dXf-Oyeo3HtwqnBPGBenCpRRK9s7gyyYAClGOYJOaMnv0NcHVSlkoZaOW9N_g-u2nUH0-Vww1cyOH2DBHZeuUe3ODQ6H40X9PZ8r-zLAeOx2Yv8PgmzzCu5Yin0A4wuxqR59vwsDAlt0JU8nXI0N7LvyaCdiHss67waP9b-nk8t42Owq08KdjJK2PpjmxD9emYK"/>
+</div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-accent-tint flex items-center justify-center text-[10px] font-bold text-primary">
+                            +2
+                        </div>
+</div>
+</div>
+</article>
+<!-- Trip Card: Tokyo Adventure -->
+<article class="group relative bg-white rounded-2xl overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.06)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.1)] transition-all duration-300 active:scale-[0.98] cursor-pointer">
+<div class="h-48 w-full relative overflow-hidden">
+<div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-700" data-alt="A modern cinematic street view of Tokyo at dusk, featuring glowing neon signs in soft pinks and blues reflected on clean pavement. A silhouette of a traveler walks through the scene. The atmosphere is vibrant, technologically advanced yet serene. The visual style is high-contrast and professional, with a focus on depth and urban beauty." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC4lU_tlVXtBG1GScOcAmhCji_U0O0P22f42PvU9khDPj3QvHtwoLWVH2QOJZKuJW6mdT4RvjgWFR7GYtgkmdTy8MRZ_LQ-EywBfA1ZfurlJ-rOBqI9Beqyw6EFay-DPwf96eqJ6RMNMzxmidi3tEKIIosXTTITLrA17SQEXsSQAHIdtip2vrl9wrZn1ODT1TTCIsJKbEDSVcERlsIcZpw38YtQbD4U0Idl89VBvqBKyRC0ykLRG4yn')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+</div>
+<div class="p-md flex justify-between items-end">
+<div>
+<h3 class="font-h1 text-h2 text-on-background">Tokyo Adventure</h3>
+<p class="font-caption text-ink-secondary mt-1">Oct 05 - Oct 14</p>
+</div>
+<div class="flex -space-x-3">
+<div class="w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-surface-variant">
+<img class="w-full h-full object-cover" data-alt="User avatar of a person with stylish glasses and a neutral expression, minimalist studio lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3RuT0IdDO6LHvjbFphhHOclMR4AGhae0Ymx4LVijhgmhFbqvRmQTXIYo70TeFVMBFHJ-_pLWysfa5QsxD_4Uks_EtbXb0QnZYVABjM_AwDOaUbzF1ejXdqc8x0axfmAjZSh4mDuoz4SmknzXUIt4qRqyF9uEeUvBrrOvWZJz1Cz_d1i7RzNmKbRb5WyfbBxwvLB-a0tqpiBXHFNr0v7cb19GCYhnYkKdv51TqUgUuZNC98TqopuTS"/>
+</div>
+<div class="w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-surface-variant">
+<img class="w-full h-full object-cover" data-alt="User avatar of a person laughing, bright airy lighting, soft pastel background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMH1Z6qXezFnOntGgGnYpOUjB3vQvPPWFMsBncYQAiekPfoB_Va_LuPHDWPhhcPlnsNfIQua35I_HNKa2Sk_59lpxrEtfgMxmp-h-7RiQQjHRIZoZvf9zNaF-eCo4KeIVnQMjY_nUTXi10WQnGCrV8k6z0bb1x-QVsfv7mh4JqzVeLQmW4e512Ju6c2oGeE9qyvT6yQoKTE4qZlsi30XW39er7VCxzGPdqWQqv52sCehI_iEZ0sUXd"/>
+</div>
+</div>
+</div>
+</article>
+<!-- Trip Card: Swiss Alps (Bento style hint) -->
+<article class="group relative bg-white rounded-2xl overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.06)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.1)] transition-all duration-300 active:scale-[0.98] cursor-pointer">
+<div class="h-48 w-full relative overflow-hidden">
+<div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-700" data-alt="Majestic snow-capped Swiss Alps under a clear blue sky, with a tiny wooden cabin in a lush green valley in the foreground. The lighting is crisp and bright. The scene evokes a sense of pure peace, luxury, and adventure. High-end nature photography style with a balanced composition and vivid natural colors." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDK4ZUJ86HSXiJzKNgCKcjNbXzS7Eno2t7oYWXZOMnyGydrFS72mcjqhc1aLsXqeT7q3DegvfzozIq8kK281ro4_sYbBQb3cbmh-dlTNTFy5f3CQ8idEdGqsw2QhcXEsh17cf0NMWmu68HG6QoJnFfu4C4EuEJW2ldSiViD9wTA59nBY27yxHZpnne7dv5NzDlgZ9EEaUt70at7BpRDKVJyqMGR0hKAnRuf2ETZWdm72UGJ_4Klfl1E')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+</div>
+<div class="p-md flex justify-between items-end">
+<div>
+<h3 class="font-h1 text-h2 text-on-background">Swiss Alps</h3>
+<p class="font-caption text-ink-secondary mt-1">Dec 20 - Dec 27</p>
+</div>
+<div class="flex -space-x-3">
+<div class="w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-surface-variant">
+<img class="w-full h-full object-cover" data-alt="User avatar showing a person wearing a winter hat, soft warm lighting, minimalist composition." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRfK4jGPpmMlBmazl4-vgZ_xdCha_wpK3nu-qfL1eL06FX52O1_1lxQQnq7SEwFfIX5IyBJBlSqM3ikNjhd8TlCNz5F9Lqq1V_nscm2FC0OMoimBSahS2qhOEg-CHi7b7xbGAAUzN6GN2ZDvlXv23wVrSB7wkHlwsNZw6S_fKvcXkZXO7jyUYpdd5Dck2W5WvH6eUOv8uUU-M1PZOOHzgQeZVSJuMr9M6i0Gz_w52Em-o0TSbGdVHv"/>
+</div>
+</div>
+</div>
+</article>
+</div>
+</main>
+<!-- FAB: New Trip -->
+<button class="fixed bottom-28 right-6 z-50 w-14 h-14 bg-primary text-white rounded-full shadow-lg flex items-center justify-center hover:bg-accent-dark active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined text-3xl" data-icon="add">add</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-8 pt-3 bg-surface rounded-t-2xl shadow-[0_-4px_16px_rgba(0,0,0,0.06)] border-t border-border-subtle">
+<!-- Trips (Active) -->
+<a class="flex flex-col items-center justify-center text-primary font-bold active-tab active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="luggage" style="font-variation-settings: 'FILL' 1;">luggage</span>
+<span class="font-label-caps text-label-caps">Trips</span>
+</a>
+<!-- Activities -->
+<a class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary/80 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="explore">explore</span>
+<span class="font-label-caps text-label-caps">Activities</span>
+</a>
+<!-- Checklist -->
+<a class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary/80 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="fact_check">fact_check</span>
+<span class="font-label-caps text-label-caps">Checklist</span>
+</a>
+<!-- Profile -->
+<a class="flex flex-col items-center justify-center text-on-secondary-container hover:text-primary/80 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="font-label-caps text-label-caps">Profile</span>
+</a>
+</nav>
+<!-- Micro-interaction Script -->
+<script>
+        document.querySelectorAll('article').forEach(card => {
+            card.addEventListener('click', () => {
+                // Subtle ripple effect or transition logic could go here
+                console.log('Navigating to trip details...');
+            });
+        });
+
+        // Simple observer to fade in items on scroll
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
+                    entry.target.classList.remove('opacity-0', 'translate-y-4');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('article').forEach(card => {
+            card.classList.add('opacity-0', 'translate-y-4', 'transition-all', 'duration-500');
+            observer.observe(card);
+        });
+    </script>
+</body></html>
