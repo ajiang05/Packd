@@ -2905,23 +2905,73 @@ function subscribeInvite(callback: () => void) {
   return () => window.removeEventListener("packd-invite", callback);
 }
 function readInvite() {
+  if (typeof window === "undefined") return "";
   return (
-    window.location.hash.slice(1) || sessionStorage.getItem("packdInvite") || ""
+    window.location.hash.slice(1) ||
+    sessionStorage.getItem("packdInvite") ||
+    localStorage.getItem("packdInvite") ||
+    ""
   );
 }
-export function AcceptInvitation() {
+export function AcceptInvitation({
+  user,
+}: {
+  user?: { id?: string; name?: string | null; email?: string | null };
+}) {
   const router = useRouter();
   const token = useSyncExternalStore(subscribeInvite, readInvite, () => "");
   const [error, setError] = useState(""),
     [pending, setPending] = useState(false);
+  const [autoJoining, setAutoJoining] = useState(false);
+
   useEffect(() => {
-    const value = window.location.hash.slice(1);
-    if (value) {
-      sessionStorage.setItem("packdInvite", value);
-      history.replaceState(null, "", "/invite");
+    const hash = window.location.hash.slice(1);
+    if (hash) {
+      sessionStorage.setItem("packdInvite", hash);
+      localStorage.setItem("packdInvite", hash);
     }
     window.dispatchEvent(new Event("packd-invite"));
   }, []);
+
+  // Auto-join if user is signed in and token is available
+  useEffect(() => {
+    if (user && token && !autoJoining && !pending && !error) {
+      setAutoJoining(true);
+      setPending(true);
+      api<{ tripId: string }>("invitations/accept", "POST", { token })
+        .then((result) => {
+          sessionStorage.removeItem("packdInvite");
+          localStorage.removeItem("packdInvite");
+          router.push(`/trips/${result.tripId}/activities`);
+        })
+        .catch((e) => {
+          setAutoJoining(false);
+          setPending(false);
+          setError((e as Error).message);
+        });
+    }
+  }, [user, token, autoJoining, pending, error, router]);
+
+  const joinTrip = async () => {
+    if (!token) return;
+    setPending(true);
+    setError("");
+    try {
+      const result = await api<{ tripId: string }>(
+        "invitations/accept",
+        "POST",
+        { token },
+      );
+      sessionStorage.removeItem("packdInvite");
+      localStorage.removeItem("packdInvite");
+      router.push(`/trips/${result.tripId}/activities`);
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setPending(false);
+    }
+  };
+
   return (
     <main className="workspace">
       <Link className="wordmark" href="/">
@@ -2930,37 +2980,32 @@ export function AcceptInvitation() {
       <section className="panel form">
         <h1>You’re invited.</h1>
         <p>
-          Sign in with Google, then join the trip. Invitations expire after
-          seven days.
+          {user
+            ? `Signed in as ${user.name || user.email}. Joining trip...`
+            : "Sign in with Google to join the trip. Invitations expire after seven days."}
         </p>
         <Alert message={error} />
-        <button onClick={() => signIn("google", { callbackUrl: "/invite" })}>
-          Sign in with Google
-        </button>
-        <button
-          className="primary"
-          disabled={!token || pending}
-          onClick={async () => {
-            setPending(true);
-            setError("");
-            try {
-              const result = await api<{ tripId: string }>(
-                "invitations/accept",
-                "POST",
-                { token },
-              );
-              sessionStorage.removeItem("packdInvite");
-              router.push(`/trips/${result.tripId}/activities`);
-            } catch (e) {
-              setError((e as Error).message);
-            } finally {
-              setPending(false);
-            }
-          }}
-        >
-          Join trip
-        </button>
-        {!token && <p>Open the invitation link shared by your organizer.</p>}
+        {!user ? (
+          <button
+            className="primary"
+            onClick={() => signIn("google", { callbackUrl: "/invite" })}
+          >
+            Sign in with Google to join
+          </button>
+        ) : (
+          <button
+            className="primary"
+            disabled={!token || pending}
+            onClick={joinTrip}
+          >
+            {pending ? "Joining trip..." : "Join trip"}
+          </button>
+        )}
+        {!token && (
+          <p className="muted text-sm mt-2">
+            Open the invitation link shared by your organizer.
+          </p>
+        )}
       </section>
     </main>
   );
