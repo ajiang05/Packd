@@ -15,17 +15,24 @@ model User {
   emailVerified DateTime?
   image         String?
 
-  accounts      Account[]
-  sessions      Session[]
+  accounts Account[]
+  sessions Session[]
 
-  tripsCreated       Trip[]              @relation("TripCreator")
-  tripMemberships    TripMember[]        @relation("TripMemberUser")
-  membersAdded       TripMember[]        @relation("TripMemberAddedBy")
+  tripsCreated       Trip[]               @relation("TripCreator")
+  tripMemberships    TripMember[]         @relation("TripMemberUser")
+  membersAdded       TripMember[]         @relation("TripMemberAddedBy")
   activitiesProposed Activity[]
   votes              Vote[]
-  checklistItems     ChecklistItem[]
+  checklistItems     ChecklistItem[]      @relation("ChecklistCreator")
+  checklistChecks    ChecklistItem[]      @relation("ChecklistChecker")
   contributions      BudgetContribution[]
   scheduleItemsAdded ScheduleItem[]
+  invitationsIssued  Invitation[]
+  expensesPaid       Expense[]            @relation("ExpensePayer")
+  expenseSplits      ExpenseSplit[]       @relation("ExpenseSplitUser")
+  tripTasksCreated   TripTask[]           @relation("TripTaskCreator")
+  tripTasksChecked   TripTask[]           @relation("TripTaskChecker")
+  tripTasksAssigned  TripTask[]           @relation("TripTaskAssignee")
 }
 
 model Account {
@@ -78,31 +85,37 @@ enum ActivityStatus {
 }
 
 model Trip {
-  id          String     @id @default(cuid())
-  name        String
-  destination String?
-  startDate   DateTime
-  endDate     DateTime
-  budgetType  BudgetType @default(TOTAL)
-  budgetAmount Decimal?  @db.Decimal(10, 2)
-  createdById String
-  createdAt   DateTime   @default(now())
+  id           String     @id @default(cuid())
+  name         String
+  destination  String?
+  startDate    DateTime
+  endDate      DateTime
+  budgetType   BudgetType @default(TOTAL)
+  budgetAmount Decimal?   @db.Decimal(10, 2) // Legacy field; retained for safe migration.
+  budgetMinor  Int?
+  currency     String     @default("USD")
+  timezone     String     @default("UTC")
+  createdById  String
+  createdAt    DateTime   @default(now())
 
-  createdBy     User                @relation("TripCreator", fields: [createdById], references: [id])
-  members       TripMember[]
-  activities    Activity[]
+  createdBy      User                 @relation("TripCreator", fields: [createdById], references: [id])
+  invitations    Invitation[]
+  members        TripMember[]
+  activities     Activity[]
   checklistItems ChecklistItem[]
-  contributions BudgetContribution[]
-  scheduleItems ScheduleItem[]
+  expenses       Expense[]
+  contributions  BudgetContribution[]
+  scheduleItems  ScheduleItem[]
+  tasks          TripTask[]
 }
 
-// AC 1.2: a member can only be removed by whoever added them — addedById tracks that.
+// Organizer authority is the trip creator. addedById records provenance only.
 model TripMember {
-  id          String   @id @default(cuid())
-  tripId      String
-  userId      String
-  addedById   String
-  joinedAt    DateTime @default(now())
+  id        String   @id @default(cuid())
+  tripId    String
+  userId    String
+  addedById String
+  joinedAt  DateTime @default(now())
 
   trip    Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
   user    User @relation("TripMemberUser", fields: [userId], references: [id], onDelete: Cascade)
@@ -111,21 +124,24 @@ model TripMember {
   @@unique([tripId, userId])
 }
 
-// status is derived from votes (strict majority yes = APPROVED, tie = NOT_APPROVED)
-// and recalculated server-side whenever a vote is cast — stored here so it can be
-// queried/filtered without re-aggregating votes on every read.
+// Legacy status retained; MVP does not automatically approve or schedule activities.
 model Activity {
-  id            String         @id @default(cuid())
-  tripId        String
-  name          String
-  description   String?
-  status        ActivityStatus @default(PENDING)
-  proposedById  String
-  createdAt     DateTime       @default(now())
+  id                 String         @id @default(cuid())
+  tripId             String
+  name               String
+  description        String?
+  status             ActivityStatus @default(PENDING)
+  location           String?
+  estimatedCostMinor Int?
+  proposedById       String
+  createdAt          DateTime       @default(now())
 
-  trip       Trip   @relation(fields: [tripId], references: [id], onDelete: Cascade)
-  proposedBy User   @relation(fields: [proposedById], references: [id])
-  votes      Vote[]
+  trip          Trip           @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  proposedBy    User           @relation(fields: [proposedById], references: [id])
+  votes         Vote[]
+  scheduleItems ScheduleItem[]
+
+  @@index([tripId, createdAt])
 }
 
 model Vote {
@@ -141,17 +157,62 @@ model Vote {
   @@unique([activityId, userId])
 }
 
-// Personal, per-user checklist scoped to a trip (AC 4.1/4.2) — not shared/blocking.
+// Personal preparation checklist item or collaborative shared packing item.
 model ChecklistItem {
-  id        String   @id @default(cuid())
-  tripId    String
-  userId    String
-  title     String
-  isChecked Boolean  @default(false)
-  createdAt DateTime @default(now())
+  id              String   @id @default(cuid())
+  tripId          String
+  userId          String
+  title           String
+  isChecked       Boolean  @default(false)
+  isShared        Boolean  @default(false)
+  checkedByUserId String?
+  createdAt       DateTime @default(now())
 
-  trip Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trip      Trip  @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  user      User  @relation("ChecklistCreator", fields: [userId], references: [id], onDelete: Cascade)
+  checkedBy User? @relation("ChecklistChecker", fields: [checkedByUserId], references: [id], onDelete: SetNull)
+
+  @@index([tripId, userId])
+  @@index([tripId, isShared])
+}
+
+enum ExpenseCategory {
+  FOOD
+  TRANSPORT
+  LODGING
+  ACTIVITY
+  OTHER
+}
+
+model Expense {
+  id           String          @id @default(cuid())
+  tripId       String
+  paidByUserId String
+  title        String
+  category     ExpenseCategory @default(OTHER)
+  amountMinor  Int
+  isSolo       Boolean         @default(false)
+  notes        String?
+  createdAt    DateTime        @default(now())
+
+  trip   Trip           @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  paidBy User           @relation("ExpensePayer", fields: [paidByUserId], references: [id])
+  splits ExpenseSplit[]
+
+  @@index([tripId, createdAt])
+}
+
+model ExpenseSplit {
+  id         String @id @default(cuid())
+  expenseId  String
+  userId     String
+  shareMinor Int
+
+  expense Expense @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  user    User    @relation("ExpenseSplitUser", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([expenseId, userId])
+  @@index([expenseId])
 }
 
 model BudgetContribution {
@@ -167,16 +228,64 @@ model BudgetContribution {
 }
 
 model ScheduleItem {
-  id                   String    @id @default(cuid())
-  tripId               String
-  title                String
-  description          String?
-  startTime            DateTime
-  endTime              DateTime?
+  id                    String    @id @default(cuid())
+  tripId                String
+  title                 String
+  description           String?
+  startTime             DateTime
+  endTime               DateTime?
+  version               Int       @default(1)
+  location              String?
+  activityId            String?
+  activity              Activity? @relation(fields: [activityId], references: [id], onDelete: SetNull)
   googleCalendarEventId String?
-  createdById          String
-  createdAt            DateTime  @default(now())
+  createdById           String
+  createdAt             DateTime  @default(now())
 
   trip      Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
   createdBy User @relation(fields: [createdById], references: [id])
+
+  @@index([tripId, startTime])
 }
+
+model Invitation {
+  id         String    @id @default(cuid())
+  tokenHash  String    @unique
+  tripId     String
+  issuedById String
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  createdAt  DateTime  @default(now())
+  trip       Trip      @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  issuedBy   User      @relation(fields: [issuedById], references: [id])
+
+  @@index([tripId])
+}
+
+// One bounded rate-limit record per authenticated user and operation class.
+model RequestLimit {
+  key       String   @id
+  startedAt DateTime
+  count     Int
+}
+
+// Collaborative trip readiness and planning tasks created and managed by trip members.
+model TripTask {
+  id               String   @id @default(cuid())
+  tripId           String
+  userId           String
+  assignedToUserId String?
+  title            String
+  description      String?
+  isChecked        Boolean  @default(false)
+  checkedByUserId  String?
+  createdAt        DateTime @default(now())
+
+  trip       Trip  @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  user       User  @relation("TripTaskCreator", fields: [userId], references: [id], onDelete: Cascade)
+  assignedTo User? @relation("TripTaskAssignee", fields: [assignedToUserId], references: [id], onDelete: SetNull)
+  checkedBy  User? @relation("TripTaskChecker", fields: [checkedByUserId], references: [id], onDelete: SetNull)
+
+  @@index([tripId, createdAt])
+}
+

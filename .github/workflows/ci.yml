@@ -1,0 +1,52 @@
+name: Verify Packd
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: packd
+          POSTGRES_PASSWORD: test_only
+          POSTGRES_DB: packd_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U packd -d packd_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    defaults:
+      run:
+        working-directory: frontend
+    env:
+      DATABASE_URL: postgresql://packd:test_only@localhost:5432/packd_test
+      AUTH_SECRET: ci-only-not-a-production-secret-12345678901234567890
+      AUTH_TRUST_HOST: 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run db:generate
+      - run: npm run db:migrate
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run api:validate
+      - run: npm run test:integration
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium firefox webkit
+      - run: npm run test:e2e
+      - name: Build application image
+        run: docker build -t packd:ci .
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: test-evidence
+          path: frontend/test-results/

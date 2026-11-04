@@ -1,0 +1,7 @@
+FROM mcr.microsoft.com/playwright:v1.64.1-noble
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN DATABASE_URL=postgresql://build:build@localhost:5432/packd_test npx prisma generate
+CMD ["npx", "playwright", "test", "--project=webkit"]
