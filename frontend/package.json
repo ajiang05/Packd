@@ -3,33 +3,53 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "next dev --webpack",
+    "build": "next build --webpack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate deploy",
+    "test:integration": "node scripts/integration.mjs",
+    "format:check": "prettier --check app lib tests auth.ts instrumentation.ts playwright.config.ts vitest.config.ts",
+    "api:validate": "node scripts/validate-api.mjs",
+    "benchmark": "tsx scripts/benchmark.ts"
   },
   "dependencies": {
-    "@prisma/client": "^7.8.0",
-    "next": "16.2.4",
-    "prisma": "^7.8.0",
+    "@auth/prisma-adapter": "^2.11.3",
+    "@js-temporal/polyfill": "^0.5.1",
+    "@langchain/core": "^1.3.0",
+    "@langchain/google-genai": "^2.3.4",
+    "@opentelemetry/api": "^1.9.1",
+    "@prisma/adapter-pg": "^7.10.1",
+    "@prisma/client": "^7.10.1",
+    "@vercel/otel": "^2.1.3",
+    "next": "^16.4.3",
+    "next-auth": "^5.0.0-beta.32",
+    "pg": "^8.23.1",
+    "prisma": "^7.10.1",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@apidevtools/swagger-parser": "^13.1.0",
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.64.1",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^24.19.2",
+    "@types/pg": "^8.23.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "dotenv": "^17.4.2",
     "eslint": "^9",
-    "eslint-config-next": "16.2.4",
+    "eslint-config-next": "^16.4.3",
+    "prettier": "^3.9.10",
     "tailwindcss": "^4",
-    "typescript": "^5"
-  },
-  "allowScripts": {
-    "@prisma/engines@7.8.0": true,
-    "prisma@7.8.0": true,
-    "sharp@0.34.5": true,
-    "unrs-resolver@1.11.1": true
+    "tsx": "^4.23.15",
+    "typescript": "^5",
+    "vitest": "^4.1.12"
   }
 }

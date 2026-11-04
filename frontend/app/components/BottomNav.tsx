@@ -2,12 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  LuggageIcon,
-  CompassIcon,
-  ChecklistIcon,
-  WalletIcon,
-} from "./icons";
+import { LuggageIcon, CompassIcon, ChecklistIcon, WalletIcon } from "./icons";
 
 // Demo trip id until real trips are wired to the database.
 const DEMO_TRIP = "demo";
@@ -40,7 +35,9 @@ export default function BottomNav() {
             key={href}
             href={href}
             className={`flex flex-col items-center justify-center gap-1 active:scale-90 transition-transform duration-200 ${
-              active ? "text-accent font-bold" : "text-ink-secondary hover:text-accent/80"
+              active
+                ? "text-accent font-bold"
+                : "text-ink-secondary hover:text-accent/80"
             }`}
           >
             <IconComponent width={22} height={22} />

@@ -1,0 +1,8 @@
+{
+  "purpose": "Local OTLP HTTP/JSON trace emission check; not a production collector",
+  "batches": 3,
+  "packdService": true,
+  "domainSpans": 51,
+  "validTraceIds": 772,
+  "recordedAt": "2026-10-27T01:04:39.858Z"
+}
