@@ -1,6 +1,6 @@
 # Shared Itinerary
 
-Status: Implemented locally; release verification is tracked in [MVP status](../docs/MVP_STATUS.md). Phase: MVP.
+Status: Implemented locally; release verification is tracked in [MVP status](../MVP_STATUS.md). Phase: MVP.
 
 ## User Story
 
@@ -29,7 +29,7 @@ Model ItineraryEntry with UTC timestamps and a version field; retain the IANA ti
 
 Organizer-only editing. Overlaps are allowed; start/end must be ordered and fall within trip dates. Changes to trip dates/timezone that invalidate entries are rejected. Entries are scheduled manually. Version checks protect updates and deletions.
 
-See [ADR 001](../docs/adr/001-mvp-defaults.md) for the choices made under the request to finish the MVP. This section resolves the earlier proposed alternatives above.
+See [ADR 001](../adr/001-mvp-defaults.md) for the choices made under the request to finish the MVP. This section resolves the earlier proposed alternatives above.
 
 ## Remaining Decisions
 

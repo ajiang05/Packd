@@ -1,6 +1,6 @@
 # Accounts and Sign-in
 
-Status: Implemented locally; release verification is tracked in [MVP status](../docs/MVP_STATUS.md). Phase: MVP.
+Status: Implemented locally; release verification is tracked in [MVP status](../MVP_STATUS.md). Phase: MVP.
 
 ## User Story
 
@@ -27,7 +27,7 @@ Model User and provider identities with unique provider identifiers. Use library
 
 Implemented with Auth.js, Google OAuth, and database sessions. Real Google sign-in requires owner credentials and an OAuth round-trip check.
 
-See [ADR 001](../docs/adr/001-mvp-defaults.md) for the choices made under the request to finish the MVP. This section resolves the earlier proposed alternatives above.
+See [ADR 001](../adr/001-mvp-defaults.md) for the choices made under the request to finish the MVP. This section resolves the earlier proposed alternatives above.
 
 ## Remaining Decisions
 

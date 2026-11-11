@@ -25,7 +25,7 @@ services:
         required: false
     environment:
       DATABASE_URL: postgresql://packd:packd_local_only@db:5432/packd
-      AUTH_URL: http://localhost:${PACKD_PORT:-3000}
+      AUTH_URL: ${PACKD_PUBLIC_URL:-http://localhost:${PACKD_PORT:-3000}}
     depends_on:
       db:
         condition: service_healthy

@@ -229,6 +229,14 @@ test("unauthenticated APIs deny access and sign-out invalidates the session", as
   context,
 }) => {
   expect((await page.request.get("/api/trips")).status()).toBe(401);
+  expect(
+    (
+      await page.request.post("/api/auth/dev-login", {
+        headers: { Origin: origin },
+      })
+    ).status(),
+  ).toBe(403);
+  expect((await page.request.get("/api/auth/dev-login")).status()).toBe(405);
   const account = await login(context, "Signout Test");
   await page.goto("/trips");
   await page.getByRole("button", { name: "Sign out", exact: true }).click();
@@ -622,17 +630,18 @@ test("trip readiness planning tasks can be added, checked off, and persist", asy
   context,
 }) => {
   const user = await login(context, "Progress traveler");
-  const trip = await db.trip.create({
+  const created = await page.request.post("/api/trips", {
+    headers: { Origin: origin },
     data: {
       name: "Progress trip",
       destination: "Rome",
       timezone: "Europe/Rome",
-      startDate: new Date("2026-07-01"),
-      endDate: new Date("2026-07-10"),
-      createdById: user.id,
-      members: { create: { userId: user.id, addedById: user.id } },
+      startDate: "2026-07-01",
+      endDate: "2026-07-10",
     },
   });
+  expect(created.status()).toBe(201);
+  const trip = await created.json();
 
   await page.goto(`/trips/${trip.id}/progress`);
   await expect(
@@ -676,7 +685,14 @@ test("trip readiness planning tasks can be added, checked off, and persist", asy
     name: "Mark “Reserve Colosseum tickets” as complete",
   });
   await expect(toggleCheckbox).toBeVisible();
+  const saved = page.waitForResponse(
+    (response) =>
+      response.request().method() === "PATCH" &&
+      response.url().includes("/tasks/") &&
+      response.ok(),
+  );
   await toggleCheckbox.check();
+  await saved;
 
   const completedCheckbox = page.getByRole("checkbox", {
     name: "Mark “Reserve Colosseum tickets” as incomplete",
@@ -701,4 +717,72 @@ test("trip readiness planning tasks can be added, checked off, and persist", asy
     "Book skip-the-line tickets for morning slot",
   );
   expect(taskInDb?.assignedToUserId).toBe(user.id);
+});
+
+test("modal keyboard focus, itinerary unlinking, and revoked trip access", async ({
+  page,
+  context,
+}) => {
+  const user = await login(context, "Review organizer");
+  const created = await page.request.post("/api/trips", {
+    headers: { Origin: origin },
+    data: {
+      name: "Review browser trip",
+      destination: "Boston",
+      timezone: "America/New_York",
+      startDate: "2026-12-20",
+      endDate: "2026-12-25",
+    },
+  });
+  expect(created.status()).toBe(201);
+  const trip = await created.json();
+  const activity = await db.activity.create({
+    data: { tripId: trip.id, proposedById: user.id, name: "Museum visit" },
+  });
+  const entry = await db.scheduleItem.create({
+    data: {
+      tripId: trip.id,
+      createdById: user.id,
+      title: "Museum visit",
+      startTime: new Date("2026-12-21T14:00:00Z"),
+      endTime: new Date("2026-12-21T15:00:00Z"),
+      activityId: activity.id,
+    },
+  });
+  await page.goto(`/trips/${trip.id}/itinerary`);
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  const dialog = page.getByRole("dialog");
+  await expect(dialog).toBeVisible();
+  for (let i = 0; i < 15; i++) {
+    await page.keyboard.press("Tab");
+    expect(
+      await dialog.evaluate((el) => el.contains(document.activeElement)),
+    ).toBe(true);
+  }
+  await page.getByLabel("Choose from activities (optional)").selectOption("");
+  await page.getByRole("button", { name: "Save entry", exact: true }).click();
+  await expect(dialog).not.toBeVisible();
+  expect(
+    (await db.scheduleItem.findUniqueOrThrow({ where: { id: entry.id } }))
+      .activityId,
+  ).toBeNull();
+  await page
+    .getByRole("button", { name: "Add to Itinerary", exact: true })
+    .click();
+  await page.keyboard.press("Escape");
+  await expect(dialog).not.toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Add to Itinerary", exact: true }),
+  ).toBeFocused();
+  // Simulate access revocation between client-side navigations without reloading JS.
+  await db.tripMember.delete({
+    where: { tripId_userId: { tripId: trip.id, userId: user.id } },
+  });
+  await page.getByRole("link", { name: "Budget", exact: true }).click();
+  await expect(
+    page.getByText("This resource is unavailable.", { exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Review browser trip", exact: true }),
+  ).not.toBeVisible();
 });

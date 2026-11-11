@@ -64,7 +64,7 @@ npm run test:e2e
 - API mutations enforce same-origin JSON requests, bounded bodies, and database-backed per-user rate limits.
 - Structured logs include request ID, method, status, and duration without request bodies. OpenTelemetry registration is opt-in via `OTEL_EXPORTER_OTLP_ENDPOINT`.
 
-[API contract](docs/openapi.json) · [Architecture](ARCHITECTURE.md) · [Product requirements](PRD.md) · [MVP](MVP.md) · [Implementation defaults](docs/adr/001-mvp-defaults.md) · [Operations](docs/OPERATIONS.md)
+[API contract](docs/openapi.json) · [Architecture](docs/ARCHITECTURE.md) · [Product requirements](docs/PRD.md) · [MVP](docs/MVP.md) · [Implementation defaults](docs/adr/001-mvp-defaults.md) · [Operations](docs/OPERATIONS.md)
 
 GitHub Actions checks the app and builds its container. The manual release workflow requires a successful CI run for the same main-branch commit, a configured production environment, registry access, and a host-specific deployment hook. Hosting, Google OAuth credentials, and the public pilot policy remain owner setup decisions.
 
@@ -75,10 +75,16 @@ On a trip’s Activities page, choose **Find activity ideas**, enter preferences
 Set these server-only variables in `frontend/.env` (Compose reads this file):
 
 ```dotenv
-ANTHROPIC_API_KEY=your-key
-ANTHROPIC_MODEL=claude-haiku-4-5-20251001
+GEMINI_API_KEY=your-key
+GEMINI_MODEL=gemini-3.6-flash
 TAVILY_API_KEY=your-key
 AI_DAILY_REQUEST_LIMIT=100
 ```
 
-Restart/recreate the app after changing configuration. LangChain TypeScript connects Claude to a bounded Tavily search workflow. Both provider keys are required; without them the UI explains that suggestions are unavailable and manual entry still works. Five requests/user/minute and a global rolling 24-hour request cap bound use; provider billing limits must be configured separately. Prices and availability are unverified. See [feature specification](features/activity-generator.md), [architecture decision](docs/adr/002-activity-planner.md), and [operations](docs/OPERATIONS.md).
+Restart/recreate the app after changing configuration. LangChain TypeScript connects Gemini to a bounded Tavily search workflow. Both provider keys are required; without them the UI explains that suggestions are unavailable and manual entry still works. Five requests/user/minute and a global rolling 24-hour request cap bound use; provider billing limits must be configured separately. Prices and availability are unverified. See [feature specification](docs/features/activity-generator.md), [architecture decision](docs/adr/002-activity-planner.md), and [operations](docs/OPERATIONS.md).
+
+## Local demo and shared instances
+
+For local development only, explicitly set `ALLOW_DEV_LOGIN=true` and run `npm run dev`. The local demo button creates a dedicated demo account; it never signs in as an existing real user. Production builds always disable this route, even if that flag is set. Shared instances use Google OAuth.
+
+When serving Compose through a shared HTTPS address, set `PACKD_PUBLIC_URL` to that origin before starting/recreating the app (for example, `PACKD_PUBLIC_URL=https://packd.example.com PACKD_PORT=3002 docker compose up -d app`). Register that origin's `/api/auth/callback/google` in Google OAuth. App ports remain loopback-bound for access through a local tunnel/proxy; do not expose PostgreSQL publicly.

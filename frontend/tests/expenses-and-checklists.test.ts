@@ -364,7 +364,7 @@ integration("Expenses, Splits, Settlement, and Shared Checklist", () => {
       // Charlie: Paid 4000 - Share (2000 + 2000) = 0 (Balanced!)
       // Alice: Paid 0 - Share (2000 + 2000) = -4000
       // Now only Alice owes Bob $40.00!
-      const settlement = (await operate(bob, "GET", [
+      const settlement = (await operate(alice, "GET", [
         "trips",
         trip.id,
         "expenses",

@@ -1,6 +1,6 @@
 # Invitations and Permissions
 
-Status: Implemented locally; release verification is tracked in [MVP status](../docs/MVP_STATUS.md). Phase: MVP.
+Status: Implemented locally; release verification is tracked in [MVP status](../MVP_STATUS.md). Phase: MVP.
 
 ## User Story
 
@@ -29,7 +29,7 @@ Store a hash of the invitation token, expiry, and revocation state. Apply member
 
 The creator is the organizer. Invitations are reusable for seven days and revocable. Organizer removal deletes that member’s votes and revokes all current invitations. Existing proposals remain. Rejoining requires a new invitation and starts with no votes.
 
-See [ADR 001](../docs/adr/001-mvp-defaults.md) for the choices made under the request to finish the MVP. This section resolves the earlier proposed alternatives above.
+See [ADR 001](../adr/001-mvp-defaults.md) for the choices made under the request to finish the MVP. This section resolves the earlier proposed alternatives above.
 
 ## Remaining Decisions
 

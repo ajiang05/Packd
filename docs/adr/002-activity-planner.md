@@ -2,7 +2,7 @@
 
 Date: 2026-10-27. Status: implementation default for the user-requested feature.
 
-Use LangChain TypeScript in the existing Next.js server with Claude Haiku 4.5 (`@langchain/anthropic`) and Tavily search. Provider selection is configurable through server environment variables; no provider secrets ship to the browser. One deterministic search-tool invocation precedes one structured model call. This supplies current source material while bounding cost and latency without an autonomous agent loop.
+Use LangChain TypeScript in the existing Next.js server with Gemini 3.6 Flash (`@langchain/google-genai`) and Tavily search. Provider selection is configurable through server environment variables; no provider secrets ship to the browser. One deterministic search-tool invocation precedes one structured model call. This supplies current source material while bounding cost and latency without an autonomous agent loop.
 
 Authorize membership before external calls and again before returning. Pass only destination, dates, timezone, budget/currency/mode, member count, recent proposal names, and user preferences. Search receives destination/preferences only. No private checklist/account/session/invitation data. The model returns source indices; attach validated retrieved HTTPS URLs server-side. Zod validates both input and output. Normalize names to suppress exact duplicates; exclude unknown/over-cap costs when the user sets a maximum. Estimates are not guarantees.
 

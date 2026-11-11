@@ -1,6 +1,6 @@
 # Trip Creation and Management
 
-Status: Implemented locally; release verification is tracked in [MVP status](../docs/MVP_STATUS.md). Phase: MVP.
+Status: Implemented locally; release verification is tracked in [MVP status](../MVP_STATUS.md). Phase: MVP.
 
 ## User Story
 
@@ -27,7 +27,7 @@ Model Trip and TripMember, with one membership per user per trip. Validate date 
 
 Trip creation atomically creates organizer membership. Required fields are name, destination, dates, and IANA timezone. Only the creator edits metadata. Date/timezone changes are rejected if they invalidate existing itinerary entries.
 
-See [ADR 001](../docs/adr/001-mvp-defaults.md) for the choices made under the request to finish the MVP. This section resolves the earlier proposed alternatives above.
+See [ADR 001](../adr/001-mvp-defaults.md) for the choices made under the request to finish the MVP. This section resolves the earlier proposed alternatives above.
 
 ## Remaining Decisions
 

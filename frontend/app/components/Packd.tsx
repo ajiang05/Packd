@@ -10,7 +10,9 @@ import {
 } from "@/lib/suggestions";
 import {
   useCallback,
+  useRef,
   useEffect,
+  useLayoutEffect,
   useState,
   useSyncExternalStore,
   type FormEvent,
@@ -897,8 +899,6 @@ export function NewTrip() {
   );
 }
 
-const tripCache = new Map<string, Trip>();
-
 export function TripWorkspace({
   tripId,
   section,
@@ -906,9 +906,7 @@ export function TripWorkspace({
   tripId: string;
   section: string;
 }) {
-  const [trip, setTrip] = useState<Trip | null>(
-      () => tripCache.get(tripId) ?? null,
-    ),
+  const [trip, setTrip] = useState<Trip | null>(null),
     [error, setError] = useState("");
   const loadCounts = useCallback(() => {
     // Kept as a stable callback for Activities to call after mutations.
@@ -917,12 +915,12 @@ export function TripWorkspace({
   const load = useCallback(() => {
     return api<Trip>(`trips/${tripId}`)
       .then((data) => {
-        tripCache.set(tripId, data);
         setTrip(data);
         setError("");
       })
       .catch((e) => {
-        if (!tripCache.has(tripId)) setTrip(null);
+        setTrip(null);
+        membersCache.delete(tripId);
         setError(e.message);
       });
   }, [tripId]);
@@ -998,26 +996,32 @@ function Modal({
   children: ReactNode;
   ariaLabelledBy?: string;
 }) {
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", handleKeyDown);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  useLayoutEffect(() => {
+    const dialog = dialogRef.current!;
     const originalOverflow = document.body.style.overflow;
+    dialog.showModal();
     document.body.style.overflow = "hidden";
     return () => {
-      window.removeEventListener("keydown", handleKeyDown);
+      dialog.close();
       document.body.style.overflow = originalOverflow;
     };
-  }, [onClose]);
+  }, []);
 
   return (
-    <div
+    <dialog
+      ref={dialogRef}
       className="modal-backdrop"
       role="dialog"
       aria-modal="true"
       aria-labelledby={ariaLabelledBy}
-      onClick={onClose}
+      onCancel={(event) => {
+        event.preventDefault();
+        onClose();
+      }}
+      onClick={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
     >
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
@@ -1042,7 +1046,7 @@ function Modal({
         </div>
         <div className="modal-body">{children}</div>
       </div>
-    </div>
+    </dialog>
   );
 }
 function Activities({
@@ -2059,7 +2063,12 @@ function Budget({ trip, refresh }: { trip: Trip; refresh: () => void }) {
               />
             </Field>
             <div className="flex gap-2 mt-2">
-              <button className="primary" disabled={expenseAction.pending}>
+              <button
+                className="primary"
+                disabled={
+                  expenseAction.pending || (!isSolo && splitCount === 0)
+                }
+              >
                 {expenseAction.pending ? "Saving..." : "Save expense"}
               </button>
               <button type="button" onClick={() => setShowAddForm(false)}>
@@ -2157,11 +2166,17 @@ function Budget({ trip, refresh }: { trip: Trip; refresh: () => void }) {
       <div className="panel mt-8">
         <h3>Who Owes Who</h3>
         <p className="muted mb-4">
-          Packd computes minimal transactions to settle debts across the whole
-          group.
+          Suggested transfers based on the shared expenses visible to you. Other
+          members may see different summaries for their expenses.
         </p>
-        {!settlement || settlement.settlements.length === 0 ? (
-          <p className="empty">All settled up! No debts pending.</p>
+        {!settlement ? (
+          <p className="empty">
+            {loadError
+              ? "Settlement unavailable. Retry loading expenses."
+              : "Loading settlement…"}
+          </p>
+        ) : settlement.settlements.length === 0 ? (
+          <p className="empty">No debts in the expenses visible to you.</p>
         ) : (
           <div className="stack">
             {settlement.settlements.map((s, idx) => (
@@ -2658,7 +2673,7 @@ function Itinerary({ trip }: { trip: Trip }) {
             startTime: toInstant(String(data.get("startTime")), trip.timezone),
             endTime: toInstant(String(data.get("endTime")), trip.timezone),
             location: locationInput || data.get("location") || "",
-            activityId: selectedActivityId || undefined,
+            activityId: selectedActivityId || null,
             ...(editing ? { version: editing.version } : {}),
           },
         ),
@@ -2922,7 +2937,6 @@ export function AcceptInvitation({
   const token = useSyncExternalStore(subscribeInvite, readInvite, () => "");
   const [error, setError] = useState(""),
     [pending, setPending] = useState(false);
-  const [autoJoining, setAutoJoining] = useState(false);
 
   useEffect(() => {
     const hash = window.location.hash.slice(1);
@@ -2932,25 +2946,6 @@ export function AcceptInvitation({
     }
     window.dispatchEvent(new Event("packd-invite"));
   }, []);
-
-  // Auto-join if user is signed in and token is available
-  useEffect(() => {
-    if (user && token && !autoJoining && !pending && !error) {
-      setAutoJoining(true);
-      setPending(true);
-      api<{ tripId: string }>("invitations/accept", "POST", { token })
-        .then((result) => {
-          sessionStorage.removeItem("packdInvite");
-          localStorage.removeItem("packdInvite");
-          router.push(`/trips/${result.tripId}/activities`);
-        })
-        .catch((e) => {
-          setAutoJoining(false);
-          setPending(false);
-          setError((e as Error).message);
-        });
-    }
-  }, [user, token, autoJoining, pending, error, router]);
 
   const joinTrip = async () => {
     if (!token) return;
@@ -2972,38 +2967,64 @@ export function AcceptInvitation({
     }
   };
 
+  if (!user) {
+    return (
+      <main className="workspace">
+        <Link className="wordmark" href="/">
+          Packd
+        </Link>
+        <section className="panel form">
+          <h1>You’re invited.</h1>
+          <p>
+            Sign in with your Google account to view and accept this trip
+            invitation.
+          </p>
+          <Alert message={error} />
+          <button
+            className="primary"
+            onClick={() => signIn("google", { callbackUrl: "/invite" })}
+          >
+            Sign in with Google
+          </button>
+          {!token && (
+            <p className="muted text-sm mt-2">
+              Open the invitation link shared by your organizer.
+            </p>
+          )}
+        </section>
+      </main>
+    );
+  }
+
   return (
     <main className="workspace">
       <Link className="wordmark" href="/">
         Packd
       </Link>
       <section className="panel form">
-        <h1>You’re invited.</h1>
+        <h1>Ready to join?</h1>
         <p>
-          {user
-            ? `Signed in as ${user.name || user.email}. Joining trip...`
-            : "Sign in with Google to join the trip. Invitations expire after seven days."}
+          You’re signed in as <strong>{user.name || user.email}</strong>. Accept
+          the invitation to join your friends on this trip.
         </p>
         <Alert message={error} />
-        {!user ? (
-          <button
-            className="primary"
-            onClick={() => signIn("google", { callbackUrl: "/invite" })}
-          >
-            Sign in with Google to join
-          </button>
-        ) : (
-          <button
-            className="primary"
-            disabled={!token || pending}
-            onClick={joinTrip}
-          >
-            {pending ? "Joining trip..." : "Join trip"}
-          </button>
-        )}
+        <button
+          className="primary"
+          disabled={!token || pending}
+          onClick={joinTrip}
+        >
+          {pending ? "Joining trip..." : "Join trip"}
+        </button>
+        <button
+          className="quiet mt-2"
+          onClick={() => signOut({ callbackUrl: "/invite" })}
+        >
+          Switch account
+        </button>
         {!token && (
           <p className="muted text-sm mt-2">
-            Open the invitation link shared by your organizer.
+            No invitation token found. Open the invitation link shared by your
+            organizer.
           </p>
         )}
       </section>

@@ -3,31 +3,33 @@ import { randomBytes } from "node:crypto";
 import { cookies } from "next/headers";
 import { db } from "@/lib/server/db";
 
-export async function GET(request: Request) {
+export async function POST(request: Request) {
   if (
-    process.env.NODE_ENV === "production" &&
+    process.env.NODE_ENV !== "development" ||
     process.env.ALLOW_DEV_LOGIN !== "true"
-  ) {
-    return new Response("Dev login disabled in production", { status: 403 });
-  }
+  )
+    return new Response("Development login is disabled", { status: 403 });
+  const url = new URL(request.url);
+  if (
+    !["localhost", "127.0.0.1", "[::1]"].includes(url.hostname) ||
+    request.headers.get("origin") !== url.origin
+  )
+    return new Response(
+      "Development login requires the local application origin",
+      { status: 403 },
+    );
 
-  // Find Aidan or the first user
-  const user =
-    (await db.user.findFirst({
-      where: { email: "aidanjiang3@gmail.com" },
-    })) ?? (await db.user.findFirstOrThrow());
-
-  const token = randomBytes(32).toString("hex");
-  const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
-
-  await db.session.create({
-    data: {
-      sessionToken: token,
-      userId: user.id,
-      expires,
-    },
+  // A dedicated local account must never impersonate a real person's account.
+  const user = await db.user.upsert({
+    where: { email: "packd-local-demo@example.invalid" },
+    create: { email: "packd-local-demo@example.invalid", name: "Local Demo" },
+    update: {},
   });
-
+  const token = randomBytes(32).toString("hex");
+  const expires = new Date(Date.now() + 60 * 60 * 1000);
+  await db.session.create({
+    data: { sessionToken: token, userId: user.id, expires },
+  });
   const cookieStore = await cookies();
   cookieStore.set("authjs.session-token", token, {
     httpOnly: true,
@@ -35,7 +37,5 @@ export async function GET(request: Request) {
     path: "/",
     expires,
   });
-
-  const url = new URL("/trips", request.url);
-  return NextResponse.redirect(url);
+  return NextResponse.redirect(new URL("/trips", request.url), 303);
 }

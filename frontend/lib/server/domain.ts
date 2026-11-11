@@ -58,6 +58,51 @@ const entryInput = z
     version: z.number().int().positive().optional(),
   })
   .strict();
+const defaultTasks = [
+  {
+    title: "Invite your travel crew",
+    description: "Share an invite link so others can join, vote, and plan.",
+  },
+  {
+    title: "Suggest & vote on activities",
+    description:
+      "Brainstorm with AI or propose ideas to build group consensus.",
+  },
+  {
+    title: "Build the shared itinerary",
+    description:
+      "Schedule flights, check-ins, and group plans on the calendar.",
+  },
+  {
+    title: "Budget & expense tracking",
+    description:
+      "Set an estimated trip budget and log shared or solo expenses.",
+  },
+  {
+    title: "Packing & group supplies",
+    description:
+      "Manage your personal packing checklist and claim shared group supplies.",
+  },
+];
+
+const splitParticipants = z
+  .array(z.string().min(1))
+  .max(100)
+  .refine(
+    (ids) => new Set(ids).size === ids.length,
+    "Split participants must be unique.",
+  );
+
+function expenseShares(amount: number, participants: string[]) {
+  const ordered = [...participants].sort();
+  const share = Math.floor(amount / ordered.length);
+  const remainder = amount % ordered.length;
+  return ordered.map((userId, index) => ({
+    userId,
+    shareMinor: share + (index < remainder ? 1 : 0),
+  }));
+}
+
 const expenseCategory = z.enum([
   "FOOD",
   "TRANSPORT",
@@ -73,7 +118,7 @@ const expenseInput = z
     isSolo: z.boolean().default(false),
     notes: z.string().trim().max(500).nullable().optional(),
     paidByUserId: z.string().min(1),
-    splitUserIds: z.array(z.string().min(1)).max(100).default([]),
+    splitUserIds: splitParticipants.default([]),
   })
   .strict();
 const expenseUpdateInput = z
@@ -84,7 +129,7 @@ const expenseUpdateInput = z
     isSolo: z.boolean().optional(),
     notes: z.string().trim().max(500).nullable().optional(),
     paidByUserId: z.string().min(1).optional(),
-    splitUserIds: z.array(z.string().min(1)).max(100).optional(),
+    splitUserIds: splitParticipants.optional(),
   })
   .strict()
   .refine(
@@ -197,6 +242,7 @@ export async function operate(
         endDate: new Date(data.endDate),
         createdById: userId,
         members: { create: { userId, addedById: userId } },
+        tasks: { create: defaultTasks.map((task) => ({ ...task, userId })) },
       },
     });
   }
@@ -479,43 +525,6 @@ export async function operate(
       if (section === "tasks") {
         if (!id) {
           if (method === "GET") {
-            const count = await tx.tripTask.count({ where: { tripId } });
-            if (count === 0) {
-              const defaultTasks = [
-                {
-                  title: "Invite your travel crew",
-                  description:
-                    "Share an invite link so others can join, vote, and plan.",
-                },
-                {
-                  title: "Suggest & vote on activities",
-                  description:
-                    "Brainstorm with AI or propose ideas to build group consensus.",
-                },
-                {
-                  title: "Build the shared itinerary",
-                  description:
-                    "Schedule flights, check-ins, and group plans on the calendar.",
-                },
-                {
-                  title: "Budget & expense tracking",
-                  description:
-                    "Set an estimated trip budget and log shared or solo expenses.",
-                },
-                {
-                  title: "Packing & group supplies",
-                  description:
-                    "Manage your personal packing checklist and claim shared group supplies.",
-                },
-              ];
-              await tx.tripTask.createMany({
-                data: defaultTasks.map((t) => ({
-                  ...t,
-                  tripId,
-                  userId,
-                })),
-              });
-            }
             return page(
               await tx.tripTask.findMany({
                 where: { tripId },
@@ -705,7 +714,11 @@ export async function operate(
         if (id === "settlement") {
           supported(method === "GET");
           const allGroupExpenses = await tx.expense.findMany({
-            where: { tripId, isSolo: false },
+            where: {
+              tripId,
+              isSolo: false,
+              OR: [{ paidByUserId: userId }, { splits: { some: { userId } } }],
+            },
             include: { splits: true },
           });
           const balances: Record<string, number> = {};
@@ -828,13 +841,10 @@ export async function operate(
             },
           });
           if (!input.isSolo && splitMembers.length > 0) {
-            const share = Math.floor(input.amountMinor / splitMembers.length);
             await tx.expenseSplit.createMany({
-              data: splitMembers.map((uid) => ({
-                expenseId: expense.id,
-                userId: uid,
-                shareMinor: share,
-              })),
+              data: expenseShares(input.amountMinor, splitMembers).map(
+                (split) => ({ ...split, expenseId: expense.id }),
+              ),
             });
           }
           return tx.expense.findUnique({
@@ -849,7 +859,8 @@ export async function operate(
         }
 
         const expense = await tx.expense.findFirst({ where: { id, tripId } });
-        if (!expense) return missing();
+        if (!expense || (expense.isSolo && expense.paidByUserId !== userId))
+          return missing();
         if (expense.paidByUserId !== userId && trip.createdById !== userId)
           fail(
             403,
@@ -897,7 +908,8 @@ export async function operate(
           await tx.expenseSplit.deleteMany({ where: { expenseId: id } });
         } else if (
           input.splitUserIds ||
-          (input.amountMinor !== undefined && !nextIsSolo)
+          expense.isSolo ||
+          input.amountMinor !== undefined
         ) {
           const currentSplits = await tx.expenseSplit.findMany({
             where: { expenseId: id },
@@ -907,13 +919,10 @@ export async function operate(
           const effectiveSplitMembers =
             splitMembers.length > 0 ? splitMembers : activeIds;
           await tx.expenseSplit.deleteMany({ where: { expenseId: id } });
-          const share = Math.floor(nextAmount / effectiveSplitMembers.length);
           await tx.expenseSplit.createMany({
-            data: effectiveSplitMembers.map((uid) => ({
-              expenseId: id,
-              userId: uid,
-              shareMinor: share,
-            })),
+            data: expenseShares(nextAmount, effectiveSplitMembers).map(
+              (split) => ({ ...split, expenseId: id }),
+            ),
           });
         }
         return tx.expense.findUnique({
@@ -964,7 +973,7 @@ export function errorResponse(error: unknown, requestId: string) {
         },
       },
     };
-  console.error("Unhandled error in errorResponse:", error);
+
   return {
     status: 500,
     body: {

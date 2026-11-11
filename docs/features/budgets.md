@@ -24,7 +24,7 @@ As a traveler, I want to track trip expenses, split costs with my group, track s
   - **Split Participants** (`splitUserIds`, required when `isSolo` is `false`):
     - Defaults to all active trip members.
     - Allows custom subset selection (e.g., splitting a dinner between 3 of 6 members).
-    - Even split calculation (`amountMinor / splitUserIds.length`) recorded in `ExpenseSplit`.
+    - Equal splits preserve every cent: distribute the remainder one cent at a time in sorted participant-ID order. Duplicate participants are rejected.
   - **Notes** (optional, up to 500 chars).
 
 ### 3. Visibility and Permissions
@@ -35,7 +35,7 @@ As a traveler, I want to track trip expenses, split costs with my group, track s
   - Solo expenses are strictly visible only to the payer.
 - **Editing and Deletion**:
   - The member who created/paid the expense can edit or delete it.
-  - The trip organizer can delete any expense for moderation.
+  - The trip organizer can moderate group expenses. Solo expenses remain accessible only to their payer, including updates and deletion.
 
 ### 4. Settlement Summary ("Who Owes Who")
 - Real-time derived calculation based on all active non-solo group expenses for which the user has visibility.
@@ -43,7 +43,7 @@ As a traveler, I want to track trip expenses, split costs with my group, track s
   - `Net Balance = (Total Paid for Group Expenses) - (Total Share of Group Expenses)`
   - Positive balance: owed money (creditor).
   - Negative balance: owes money (debtor).
-- Minimized settlement transactions computed via greedy debtor/creditor matching:
+- Suggested settlement transactions computed via greedy debtor/creditor matching:
   - e.g., "Jordan owes Alex $120.00", "Sam owes Alex $60.00".
 - Computed on demand, never persisted as mutable settlement state, ensuring instant reconciliation if an expense is edited or deleted.
 
@@ -54,7 +54,7 @@ As a traveler, I want to track trip expenses, split costs with my group, track s
 3. Group expenses divide evenly across specified members, storing integer minor units.
 4. Non-members cannot view, create, edit, or delete expenses.
 5. Members cannot view solo expenses logged by other members or group expenses they were not part of.
-6. Only the payer or the organizer can edit or delete an expense.
+6. Only the payer or the organizer can edit/delete a group expense; only the payer can modify a solo expense.
 7. Deleting or editing an expense recalculates balances and settlement transactions immediately.
 8. External banking, payment gateway processing, and automated money transfers remain non-goals.
 
@@ -107,4 +107,6 @@ model ExpenseSplit {
 - `POST /api/trips/:id/expenses` — Creates a new expense (and splits if not solo).
 - `PATCH /api/trips/:id/expenses/:expenseId` — Updates an expense and recomputes splits.
 - `DELETE /api/trips/:id/expenses/:expenseId` — Deletes an expense and its splits.
-- `GET /api/trips/:id/expenses/settlement` — Returns net balances and minimal debt settlement transactions.
+- `GET /api/trips/:id/expenses/settlement` — Returns net balances and suggested debt settlement transactions.
+
+Settlement summaries use only expenses visible to the requesting member. Different members may see different summaries; they are not a single group-wide settlement ledger. Group-to-solo removes splits; solo-to-group creates them, defaulting to current members.
