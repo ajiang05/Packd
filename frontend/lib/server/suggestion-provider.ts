@@ -70,7 +70,8 @@ export const generateSuggestions: Planner = async (context, input, signal) => {
   );
   if (!sources.length) return { output: { suggestions: [] }, sources };
   const model = new ChatGoogleGenerativeAI({
-    model: process.env.GEMINI_MODEL?.trim() || "gemini-2.0-flash",
+    apiKey: process.env.GEMINI_API_KEY,
+    model: process.env.GEMINI_MODEL?.trim() || "gemini-3.6-flash",
     maxOutputTokens: 2500,
     maxRetries: 0,
   });

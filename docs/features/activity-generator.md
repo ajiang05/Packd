@@ -1,6 +1,6 @@
 # LangChain Activity Planner
 
-Status: Implemented; automated and live-provider verification tracked in [MVP status](../docs/MVP_STATUS.md). Phase: Expanded MVP (FR-009), requested 2026-10-27.
+Status: Implemented; automated and live-provider verification tracked in [MVP status](../MVP_STATUS.md). Phase: Expanded MVP (FR-009), requested 2026-10-27.
 
 ## User story
 
@@ -10,7 +10,7 @@ As a trip member, I want sourced activity ideas tailored to our destination, dat
 
 - On Activities, request up to five suggestions with optional preferences (600 characters) and a USD maximum per person per activity.
 - Server loads shared trip context and up to 100 recent proposal names after checking membership. Private checklists/identities are excluded.
-- LangChain invokes a Tavily search tool once, then Claude returns Zod-validated structured suggestions: title, description, location, nullable estimated cents/duration, and a supporting source index.
+- LangChain invokes a Tavily search tool once, then Gemini returns Zod-validated structured suggestions: title, description, location, nullable estimated cents/duration, and a supporting source index.
 - Server attaches retrieved HTTPS source links and filters normalized duplicate names. An explicit cost cap excludes unknown and over-cap estimates. Trip budget is context, not an inferred remaining balance.
 - Empty results are valid. Unavailable providers, missing keys, invalid responses, quotas, and timeouts have recoverable UI states. Manual proposals remain available.
 - A member explicitly adds a card through the normal proposal API. Source/estimate wording and duration are retained in its description; normal voting then applies. No automatic votes, bookings, winners, or itinerary entries.
@@ -26,6 +26,6 @@ As a trip member, I want sourced activity ideas tailored to our destination, dat
 
 ## Configuration and limits
 
-Server-only `ANTHROPIC_API_KEY`, `TAVILY_API_KEY`, optional `ANTHROPIC_MODEL` (Claude Haiku 4.5 default), `AI_DAILY_REQUEST_LIMIT` (default 100). Five requests/user/minute; global rolling 24-hour cap; 45-second overall deadline; at most eight search results and 2,500 output tokens; no automatic retries. Failed attempts consume quota. Configure provider billing limits separately.
+Server-only `GEMINI_API_KEY`, `TAVILY_API_KEY`, optional `GEMINI_MODEL` (Gemini 3.6 Flash default), `AI_DAILY_REQUEST_LIMIT` (default 100). Five requests/user/minute; global rolling 24-hour cap; 45-second overall deadline; at most eight search results and 2,500 output tokens; no automatic retries. Failed attempts consume quota. Configure provider billing limits separately.
 
-[ADR 002](../docs/adr/002-activity-planner.md) · [Operations](../docs/OPERATIONS.md) · [API contract](../docs/openapi.json)
+[ADR 002](../adr/002-activity-planner.md) · [Operations](../OPERATIONS.md) · [API contract](../openapi.json)

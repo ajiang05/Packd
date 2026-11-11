@@ -3742,7 +3742,8 @@
               }
             }
           }
-        }
+        },
+        "description": "Uses only shared expenses paid by the caller or split with the caller. This is a personal view, not a canonical trip-wide settlement. Private expenses are excluded."
       }
     },
     "/trips/{tripId}/checklist/shared": {
@@ -3866,6 +3867,135 @@
       "delete": {
         "summary": "Delete shared checklist item",
         "operationId": "deleteSharedChecklistItem",
+        "responses": {
+          "204": {
+            "description": "Deleted"
+          }
+        }
+      }
+    },
+    "/trips/{tripId}/tasks": {
+      "parameters": [
+        {
+          "name": "tripId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "List trip planning tasks",
+        "operationId": "getTripTask",
+        "responses": {
+          "200": {
+            "description": "Planning tasks",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/TripTask"
+                      }
+                    },
+                    "nextCursor": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "nextCursor"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "description": "Read-only. Five default tasks are created atomically with each new trip; deleting all tasks does not recreate them."
+      },
+      "post": {
+        "summary": "Add item to trip planning tasks",
+        "operationId": "createTripTaskItem",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TripTaskInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Planning task created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TripTask"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/trips/{tripId}/tasks/{itemId}": {
+      "parameters": [
+        {
+          "name": "tripId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "itemId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "patch": {
+        "summary": "Toggle or update trip planning tasks item",
+        "operationId": "updateTripTaskItem",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TripTaskUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated planning task",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TripTask"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete trip planning tasks item",
+        "operationId": "deleteTripTaskItem",
         "responses": {
           "204": {
             "description": "Deleted"
@@ -4699,7 +4829,8 @@
             "items": {
               "type": "string"
             },
-            "maxItems": 100
+            "maxItems": 100,
+            "uniqueItems": true
           }
         },
         "required": [
@@ -4744,7 +4875,8 @@
             "items": {
               "type": "string"
             },
-            "maxItems": 100
+            "maxItems": 100,
+            "uniqueItems": true
           }
         },
         "additionalProperties": false
@@ -4907,6 +5039,177 @@
           }
         },
         "additionalProperties": false
+      },
+      "TripTask": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "tripId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "isChecked": {
+            "type": "boolean"
+          },
+          "checkedByUserId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "checkedBy": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "assignedToUserId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "assignedTo": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "name"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "id",
+          "tripId",
+          "userId",
+          "title",
+          "isChecked",
+          "createdAt"
+        ],
+        "additionalProperties": false
+      },
+      "TripTaskInput": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 2000
+          },
+          "assignedToUserId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "additionalProperties": false
+      },
+      "TripTaskUpdate": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "isChecked": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 2000
+          },
+          "assignedToUserId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false,
+        "minProperties": 1
       }
     }
   }

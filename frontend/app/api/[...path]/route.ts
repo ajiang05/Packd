@@ -92,7 +92,6 @@ async function handle(
       },
     });
   } catch (error) {
-    console.error("API error in route.ts:", error);
     const response = errorResponse(error, requestId);
     status = response.status;
     return Response.json(response.body, {

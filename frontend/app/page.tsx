@@ -37,17 +37,14 @@ export default async function Home() {
           }}
         >
           {configured && <LoginButton />}
-          {(process.env.NODE_ENV !== "production" ||
-            process.env.ALLOW_DEV_LOGIN === "true") && (
-            <Link
-              href="/api/auth/dev-login"
-              prefetch={false}
-              className="primary"
-              style={{ background: "#252525", borderColor: "#252525" }}
-            >
-              Sign in as Aidan (Dev 1-Click)
-            </Link>
-          )}
+          {process.env.NODE_ENV === "development" &&
+            process.env.ALLOW_DEV_LOGIN === "true" && (
+              <form action="/api/auth/dev-login" method="post">
+                <button className="primary" type="submit">
+                  Use local demo account
+                </button>
+              </form>
+            )}
           {!configured && (
             <p className="notice">
               Google sign-in is not configured yet. The app owner needs to
