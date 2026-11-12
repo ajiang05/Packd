@@ -6,6 +6,8 @@ The core application is implemented and locally verified; external release setup
 
 ## Local setup
 
+See [How to start Packd](docs/howtostart.md) for Docker and local development commands, environment setup, and troubleshooting.
+
 Requirements: Node.js 24, npm, Docker with Compose, and a Google OAuth web application for real sign-in.
 
 From the repository root:

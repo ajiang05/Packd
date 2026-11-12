@@ -26,6 +26,8 @@ As a trip member, I want sourced activity ideas tailored to our destination, dat
 
 ## Configuration and limits
 
-Server-only `GEMINI_API_KEY`, `TAVILY_API_KEY`, optional `GEMINI_MODEL` (Gemini 3.6 Flash default), `AI_DAILY_REQUEST_LIMIT` (default 100). Five requests/user/minute; global rolling 24-hour cap; 45-second overall deadline; at most eight search results and 2,500 output tokens; no automatic retries. Failed attempts consume quota. Configure provider billing limits separately.
+Server-only `GEMINI_API_KEY`, `TAVILY_API_KEY`, optional `GEMINI_MODEL` (Gemini 3.6 Flash default), `AI_DAILY_REQUEST_LIMIT` (default 100). Five requests/user/minute; global rolling 24-hour cap; 45-second overall deadline; at most eight search results and 2,500 output tokens; one automatic Gemini retry for HTTP 500/502/503/504 within the same deadline; no search, authentication, or quota retries. Failed attempts consume quota. Configure provider billing limits separately.
 
 [ADR 002](../adr/002-activity-planner.md) · [Operations](../OPERATIONS.md) · [API contract](../openapi.json)
+
+Provider failures emit sanitized `ai_suggestion_failed` logs with provider, HTTP status, and category. Logs omit keys, prompts, trip content, and raw error messages.
