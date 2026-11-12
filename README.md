@@ -4,6 +4,10 @@ A group travel planner built with Next.js, React, TypeScript, PostgreSQL, Prisma
 
 The core application is implemented and locally verified; external release setup remains in progress. Local tests use real PostgreSQL and database-backed test sessions; they do not prove that Google OAuth or a public deployment is configured. See [MVP status](docs/MVP_STATUS.md) for verified evidence and remaining gates.
 
+## Demo
+
+[Watch the Packd demo on YouTube](https://youtu.be/Fr370qoZObA)
+
 ## Local setup
 
 See [How to start Packd](docs/howtostart.md) for Docker and local development commands, environment setup, and troubleshooting.
