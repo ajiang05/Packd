@@ -1,3 +1,4 @@
+import { AIProviderError } from "./ai-provider-error";
 import { createHash } from "node:crypto";
 import { z } from "zod";
 import { db } from "./db";
@@ -162,7 +163,20 @@ export async function suggestActivities(
       context.existingActivities,
       input.maxCostMinor,
     );
-  } catch {
+  } catch (error) {
+    console.warn(
+      JSON.stringify({
+        event: "ai_suggestion_failed",
+        provider:
+          error instanceof AIProviderError ? error.provider : "pipeline",
+        status: error instanceof AIProviderError ? error.status : null,
+        category: combined.aborted
+          ? "timeout"
+          : error instanceof z.ZodError
+            ? "invalid_response"
+            : "provider_error",
+      }),
+    );
     if (combined.aborted)
       throw new ApiError(
         504,

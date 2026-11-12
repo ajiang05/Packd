@@ -8,6 +8,8 @@ Authorize membership before external calls and again before returning. Pass only
 
 Users explicitly save selected ideas via the existing transactional activity API. Preserve source URL, duration and estimate notice in the activity description. Generated results are ephemeral, and no votes/itinerary entries are created automatically. No database migration, pgvector, Redis, separate Python service, or chat memory is required.
 
-Use existing PostgreSQL RequestLimit storage for atomic global/user quotas. Defaults: 100 global requests per rolling 24 hours, five/user/minute, one search plus one model call, 2,500 output tokens, 45-second deadline, zero automatic retries. Failed calls consume quota. Provider billing limits and live quality/cost validation are deployment tasks.
+Use existing PostgreSQL RequestLimit storage for atomic global/user quotas. Defaults: 100 global requests per rolling 24 hours, five/user/minute, one search plus at most two model attempts, 2,500 output tokens, 45-second deadline, one automatic Gemini retry for HTTP 500/502/503/504 within the same deadline. Failed calls consume quota. Provider billing limits and live quality/cost validation are deployment tasks.
 
 References: [LangChain Anthropic integration](https://docs.langchain.com/oss/javascript/integrations/chat/anthropic), [LangChain tools](https://docs.langchain.com/oss/javascript/langchain/tools), [Tavily Search API](https://docs.tavily.com/documentation/api-reference/endpoint/search).
+
+Provider failures emit sanitized `ai_suggestion_failed` logs with provider, HTTP status, and category. Logs omit keys, prompts, trip content, and raw error messages.
